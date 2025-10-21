@@ -2,7 +2,7 @@ name: fenv_graphql_core
 description: >-
   Runtime library providing core functionality for fenv GraphQL code generation,
   including query runners and state management.
-version: 0.0.0
+version: 0.0.0+1
 repository: https://github.com/fenv-org/fenv_graphql_codegen
 topics:
   - graphql
