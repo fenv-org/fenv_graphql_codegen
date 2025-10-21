@@ -1,7 +1,15 @@
 name: fenv_graphql_core
-description: A starting point for Dart libraries or applications.
+description: >-
+  Runtime library providing core functionality for fenv GraphQL code generation,
+  including query runners and state management.
 version: 0.0.0
 repository: https://github.com/fenv-org/fenv_graphql_codegen
+topics:
+  - graphql
+  - state-management
+  - flutter
+  - hooks
+  - pagination
 
 environment:
   sdk: ^3.9.0
