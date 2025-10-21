@@ -1,0 +1,43 @@
+builders:
+  fenv_graphql_codegen:
+    import: 'package:fenv_graphql_codegen/fenv_graphql_codegen.dart'
+    builder_factories: ['fenvGraphqlWrapperBuilderFactory']
+    build_extensions: {
+      '^lib/{{}}.graphql.dart': ['lib/{{}}.fenv.dart']
+    }
+    auto_apply: dependents
+    build_to: source
+    defaults:
+      generate_for: ['lib/**/*.graphql.dart']
+      options:
+        target_file_extension: .graphql.dart
+        symbol_name_prefix: fenv
+        filename_suffix: fenv
+        format: true
+
+  fenv_graphql_mocks_codegen:
+    import: 'package:fenv_graphql_codegen/fenv_graphql_codegen.dart'
+    builder_factories: ['fenvGraphqlMockBuilderFactory']
+    build_extensions: {
+      '^lib/{{}}.graphql.dart': ['test/{{}}.fenv.mocks.dart']
+    }
+    auto_apply: dependents
+    build_to: source
+    defaults:
+      generate_for: ['lib/**/*.graphql.dart']
+      options:
+        target_file_extension: .graphql.dart
+        symbol_name_prefix: fenv
+        filename_suffix: fenv
+        format: true
+
+  graphql_codegen:
+    import: 'package:fenv_graphql_codegen/fenv_graphql_codegen.dart'
+    builder_factories: ['GraphQLBuilder.builder']
+    build_extensions: {'$lib$': ['.graphql.dart']}
+    auto_apply: dependents
+    build_to: source
+    runs_before:
+      - json_serializable:json_serializable
+      - fenv_graphql_codegen
+      - fenv_graphql_mocks_codegen

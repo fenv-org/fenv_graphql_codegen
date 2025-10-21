@@ -1,8 +1,12 @@
-/// Support for doing something awesome.
+/// A Dart code generator that creates test-friendly wrappers and mock
+/// implementations for GraphQL operations.
 ///
-/// More dartdocs go here.
+/// This package provides two builders:
+/// - `fenv_graphql_codegen`: Generates production wrapper code
+/// - `fenv_graphql_mocks_codegen`: Generates mock implementations for testing
 library;
 
-export 'src/fenv_graphql_codegen_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'package:graphql_codegen/builder.dart' show GraphQLBuilder;
+export 'src/fenv_graphql_wrapper_builder.dart'
+    show fenvGraphqlWrapperBuilderFactory;
+export 'src/fenv_graphql_mock_builder.dart' show fenvGraphqlMockBuilderFactory;
