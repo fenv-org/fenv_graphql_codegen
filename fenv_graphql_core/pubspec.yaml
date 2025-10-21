@@ -1,0 +1,15 @@
+name: fenv_graphql_core
+description: A starting point for Dart libraries or applications.
+version: 0.0.0
+repository: https://github.com/fenv-org/fenv_graphql_codegen
+
+environment:
+  sdk: ^3.9.0
+
+# Add regular dependencies here.
+dependencies:
+  # path: ^1.8.0
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.24.0

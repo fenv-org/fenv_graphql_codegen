@@ -1,0 +1,666 @@
+# fenv_graphql_codegen
+
+A Dart code generator that creates test-friendly wrappers for GraphQL
+operations. It generates production code and comprehensive test mocks from your
+GraphQL queries and mutations, making it easy to write robust tests for your
+GraphQL-powered Flutter applications.
+
+## Features
+
+- Generates type-safe wrapper functions for GraphQL queries and mutations
+- Creates test-friendly hooks compatible with Flutter Hooks
+- Automatically generates mock implementations for testing
+- Supports pagination with type-safe `fetchMore` operations
+- Provides strongly-typed query options and variables
+- Customizable naming prefixes and file suffixes
+
+## Installation
+
+Add the following dependencies to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  fenv_graphql_core: ^0.0.1
+  graphql_flutter: ^5.2.0
+  hooks_riverpod: ^2.6.1
+
+dev_dependencies:
+  fenv_graphql_codegen: ^1.0.0
+  build_runner: ^2.4.9
+```
+
+## Configuration
+
+### Customizing the Prefix
+
+You can customize the generated code prefix and file naming by creating a
+`build.yaml` file in your project root:
+
+```yaml
+targets:
+  $default:
+    builders:
+      fenv_graphql_codegen:
+        options:
+          # Changes function names from fenv$Query$... to myapp$Query$...
+          symbol_name_prefix: myapp
+
+          # Changes generated file suffix from .fenv.dart to .myapp.dart
+          filename_suffix: myapp
+
+          # Target files that should be processed
+          target_file_extension: .graphql.dart
+
+          # Whether to format generated files (can be disabled for performance)
+          format: true
+```
+
+With the above configuration:
+
+- Generated functions: `myapp$Query$HelloWorld()`, `myapp$Mutate$ChangeWorld()`
+- Generated hooks: `useMyapp$Query$HelloWorld()`
+- Generated files: `my_file.myapp.dart`, `my_file.myapp.mocks.dart`
+
+### Available Options
+
+| Option                  | Default         | Description                                         |
+| ----------------------- | --------------- | --------------------------------------------------- |
+| `target_file_extension` | `.graphql.dart` | File extension pattern to match for code generation |
+| `symbol_name_prefix`    | `fenv`          | Prefix for generated function and class names       |
+| `filename_suffix`       | `fenv`          | Suffix for generated file names                     |
+| `format`                | `true`          | Whether to run dart formatter on generated code     |
+
+## Code Generation
+
+After setting up your GraphQL schema files (typically with `.graphql.dart`
+extension), run:
+
+```shell
+dart run build_runner build --delete-conflicting-outputs
+```
+
+Or for watch mode during development:
+
+```shell
+dart run build_runner watch --delete-conflicting-outputs
+```
+
+## Usage
+
+There are three main ways to use the generated code, each suited for different
+scenarios:
+
+### 1. Simple Usage: Direct Client Calls
+
+The simplest approach is to call the generated client extension methods
+directly. This is ideal for one-off queries or mutations that don't need
+reactive state management.
+
+**Example GraphQL operations:**
+
+```graphql
+query HelloWorld($id: ID!) {
+  user(id: $id) {
+    id
+    name
+  }
+}
+
+mutation ChangeWorld($id: ID!, $name: String!) {
+  updateUser(id: $id, name: $name) {
+    id
+    name
+  }
+}
+```
+
+**Usage in your code:**
+
+```dart
+import 'package:graphql_flutter/graphql_flutter.dart';
+
+Future<void> fetchUserData(String userId) async {
+  final client = ref.read(graphqlClientProvider);
+
+  // Execute a query
+  final queryResult = await client.fenv$Query$HelloWorld(
+    Options$Query$HelloWorld(
+      variables: Variables$Query$HelloWorld(id: userId),
+    ),
+  );
+
+  if (queryResult.hasException) {
+    // Handle error
+    print('Error: ${queryResult.exception}');
+  } else {
+    // Use the parsed data
+    final user = queryResult.parsedData?.user;
+    print('User name: ${user?.name}');
+  }
+}
+
+Future<void> updateUser(String userId, String newName) async {
+  final client = ref.read(graphqlClientProvider);
+
+  // Execute a mutation
+  final mutationResult = await client.fenv$Mutate$ChangeWorld(
+    Options$Mutation$ChangeWorld(
+      variables: Variables$Mutation$ChangeWorld(
+        id: userId,
+        name: newName,
+      ),
+    ),
+  );
+
+  if (!mutationResult.hasException) {
+    print('User updated successfully!');
+  }
+}
+```
+
+**When to use direct client calls:**
+
+- One-off data fetches
+- Mutations triggered by user actions
+- Simple request-response patterns
+- When you don't need reactive UI updates
+
+### 2. Using Query Hooks
+
+For Flutter widgets that need reactive GraphQL data, use the generated hooks.
+These hooks automatically manage loading states, errors, and data updates.
+
+#### Basic Query Hook Usage
+
+```dart
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+class UserProfile extends HookConsumerWidget {
+  const UserProfile({super.key, required this.userId});
+
+  final String userId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final query = useFenv$Query$HelloWorld(
+      Options$Query$HelloWorld(
+        variables: Variables$Query$HelloWorld(id: userId),
+      ),
+    );
+
+    // Handle loading state
+    if (query.result.isLoading) {
+      return const CircularProgressIndicator();
+    }
+
+    // Handle errors
+    if (query.result.hasException) {
+      return Text('Error: ${query.result.exception}');
+    }
+
+    // Use the data
+    final user = query.result.parsedData?.user;
+    return Text('Name: ${user?.name}');
+  }
+}
+```
+
+#### Refetching Data
+
+Refetch allows you to reload data with the same variables:
+
+```dart
+class UserProfile extends HookConsumerWidget {
+  const UserProfile({super.key, required this.userId});
+
+  final String userId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final query = useFenv$Query$HelloWorld(
+      Options$Query$HelloWorld(
+        variables: Variables$Query$HelloWorld(id: userId),
+      ),
+    );
+
+    // Create a refetch callback
+    final refresh = useCallback(() async {
+      await query.refetch();
+    }, [query]);
+
+    return Column(
+      children: [
+        if (query.result.isLoading)
+          const CircularProgressIndicator()
+        else if (query.result.hasException)
+          Text('Error: ${query.result.exception}')
+        else
+          Text('Name: ${query.result.parsedData?.user.name}'),
+
+        ElevatedButton(
+          onPressed: refresh,
+          child: const Text('Refresh'),
+        ),
+      ],
+    );
+  }
+}
+```
+
+#### Pagination with fetchMore
+
+For paginated queries following the Relay cursor-based pagination spec:
+
+**GraphQL Query:**
+
+```graphql
+query UserList($after: String, $first: Int) {
+  users(after: $after, first: $first) {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+}
+```
+
+**Widget Implementation:**
+
+```dart
+class UserListView extends HookConsumerWidget {
+  const UserListView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final query = useFenv$Query$UserList(
+      Options$Query$UserList(
+        variables: Variables$Query$UserList(first: 10),
+      ),
+    );
+
+    final loadMore = useCallback(() async {
+      final pageInfo = query.result.parsedData?.users.pageInfo;
+
+      if (pageInfo?.hasNextPage == true) {
+        await query.fetchMore(
+          Fenv$FetchMoreOptions$Query$UserList(
+            variables: Variables$Query$UserList(
+              after: pageInfo?.endCursor,
+              first: 10,
+            ),
+            updateQuery: (previousResultData, fetchMoreResultData) {
+              // Merge the paginated results
+              return fetchMoreResultData.copyWith.users(
+                edges: [
+                  ...?previousResultData.users.edges,
+                  ...?fetchMoreResultData.users.edges,
+                ],
+              );
+            },
+          ),
+        );
+      }
+    }, [query]);
+
+    final users = query.result.parsedData?.users.edges ?? [];
+    final hasMore = query.result.parsedData?.users.pageInfo.hasNextPage ?? false;
+
+    return ListView.builder(
+      itemCount: users.length + (hasMore ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index == users.length) {
+          // Load more button at the end
+          return ElevatedButton(
+            onPressed: loadMore,
+            child: const Text('Load More'),
+          );
+        }
+
+        final user = users[index].node;
+        return ListTile(
+          title: Text(user.name),
+          subtitle: Text(user.id),
+        );
+      },
+    );
+  }
+}
+```
+
+**When to use query hooks:**
+
+- Widgets that display GraphQL data
+- When you need automatic UI updates on data changes
+- Pagination scenarios
+- When you need built-in loading and error states
+
+### 3. Using Query Runners (Advanced)
+
+Query Runners provide fine-grained control over query lifecycle and state
+management. They're ideal for complex scenarios requiring manual state control
+or integration with Riverpod state management.
+
+#### Basic QueryRunner Setup
+
+Query Runners work with generated `Operation` classes that implement
+`SimpleQueryOperation`:
+
+```dart
+import 'package:fenv_graphql_core/fenv_graphql_core.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+// The code generator creates Operation classes for you
+// Example: Fenv$Query$HelloWorld$Operation
+
+// Create a QueryRunner
+final queryRunner = QueryRunner.builder()
+    .queryOperation(operation)  // Pass your generated operation
+    .build();
+
+// Start the query
+await queryRunner.start(
+  options: Options$Query$HelloWorld(
+    variables: Variables$Query$HelloWorld(id: userId),
+  ),
+  retryOnNetworkError: true,
+);
+
+// Listen to state changes
+queryRunner.addListener(() {
+  final state = queryRunner.value;
+  switch (state) {
+    case QueryState$Created():
+      print('Query not started yet');
+    case QueryState$InitialLoading():
+      print('Loading initial data...');
+    case QueryState$InitialLoadingFailed(:final error):
+      print('Failed to load: $error');
+    case QueryState$Loaded(:final data, :final isRefetching):
+      print('Data loaded! Refetching: $isRefetching');
+      print('Data: $data');
+    case QueryState$Disabled():
+      print('Query disabled');
+  }
+});
+
+// Refetch data
+final refetchResult = await queryRunner.refetch(
+  options: myOptions,
+  forceRefetch: false,
+);
+
+switch (refetchResult) {
+  case RefetchResult$Succeeded():
+    print('Refetch successful!');
+  case RefetchResult$Failed(:final exception):
+    print('Refetch failed: $exception');
+  case RefetchResult$Ignored():
+    print('Refetch ignored (already refetching)');
+  case RefetchResult$Cancelled():
+    print('Refetch cancelled (stale request)');
+}
+
+// Clean up when done
+queryRunner.dispose();
+```
+
+#### Integrating with Riverpod
+
+Query Runners can automatically sync with Riverpod notifiers:
+
+```dart
+@riverpod
+class UserDataNotifier extends _$UserDataNotifier {
+  @override
+  QueryState<Query$HelloWorld> build() {
+    // Create the query runner and bind it to this notifier
+    final client = ref.watch(graphqlClientProvider);
+    final operation = Fenv$Query$HelloWorld$Operation(client);
+
+    final runner = QueryRunner.builder()
+        .queryOperation(operation)
+        .applyTo(this)  // <-- Auto-syncs runner state to notifier
+        .build();
+
+    // Start the query
+    runner.start(
+      options: Options$Query$HelloWorld(
+        variables: Variables$Query$HelloWorld(id: 'user-123'),
+      ),
+      retryOnNetworkError: true,
+    );
+
+    // Return initial state
+    return const QueryState.created();
+  }
+
+  // Methods to control the query runner
+  Future<void> refresh() async {
+    // Access the runner and trigger refetch
+  }
+}
+```
+
+#### PaginatedQueryRunner for Pagination
+
+For queries with cursor-based pagination, use `PaginatedQueryRunner`:
+
+```dart
+// Generated operations implement PaginatedQueryOperation
+// Example: Fenv$Query$UserList$Operation
+
+final paginatedRunner = PaginatedQueryRunner.builder()
+    .queryOperation(paginatedOperation)
+    .build();
+
+// Start initial load
+await paginatedRunner.start(
+  options: Options$Query$UserList(
+    variables: Variables$Query$UserList(first: 10),
+  ),
+  retryOnNetworkError: true,
+);
+
+// Listen to paginated state changes
+paginatedRunner.addListener(() {
+  final state = paginatedRunner.value;
+  switch (state) {
+    case PaginatedQueryState$Created():
+      print('Not started');
+    case PaginatedQueryState$InitialLoading():
+      print('Loading first page...');
+    case PaginatedQueryState$InitialLoadingFailed(:final error):
+      print('Failed: $error');
+    case PaginatedQueryState$Loaded(
+      :final data,
+      :final extra,
+      :final endCursor,
+      :final hasMore,
+      :final isRefetching,
+      :final isFetchingMore,
+    ):
+      print('Loaded ${data.length} items');
+      print('Has more: $hasMore');
+      print('Is fetching more: $isFetchingMore');
+      print('Is refetching: $isRefetching');
+  }
+});
+
+// Fetch more items
+final fetchMoreResult = await paginatedRunner.fetchMore(
+  Options$Query$UserList(
+    variables: Variables$Query$UserList(
+      after: currentEndCursor,
+      first: 10,
+    ),
+  ),
+);
+
+switch (fetchMoreResult) {
+  case FetchMoreResult$Succeeded():
+    print('Loaded more items!');
+  case FetchMoreResult$Failed(:final exception):
+    print('Failed to load more: $exception');
+  case FetchMoreResult$Ignored():
+    print('Fetch more ignored (no more items or already loading)');
+  case FetchMoreResult$Cancelled():
+    print('Fetch more cancelled');
+}
+
+// Refetch from the beginning
+await paginatedRunner.refetch(
+  options: Options$Query$UserList(
+    variables: Variables$Query$UserList(first: 10),
+  ),
+  forceRefetch: false,
+);
+```
+
+#### Query Runner State Transformations
+
+Transform the state to derive custom values:
+
+```dart
+// Transform QueryState to extract just the data
+final transformedRunner = QueryRunner.builder()
+    .queryOperation(operation)
+    .transform((QueryState<Query$HelloWorld> state) {
+      // Map state to a custom type
+      return switch (state) {
+        QueryState$Loaded(:final data) => data,
+        _ => null,
+      };
+    })
+    .build();
+
+// Now runner.value is Query$HelloWorld? instead of QueryState
+```
+
+**When to use Query Runners:**
+
+- Advanced state management requirements
+- Need manual control over query lifecycle
+- Integration with complex Riverpod state patterns
+- Custom state transformations
+- Multiple queries coordination
+- Background data synchronization
+
+## Testing with Generated Mocks
+
+The builder automatically generates mock implementations in
+`test/**/*.fenv.mocks.dart` files.
+
+### Basic Mock Setup
+
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'my_queries.fenv.mocks.dart';
+
+void main() {
+  late MockUseFenv$Query$HelloWorld mockUseQuery;
+  late MockFenv$Mutation$ChangeWorld mockMutation;
+
+  setUp(() {
+    mockUseQuery = MockUseFenv$Query$HelloWorld()..install();
+    mockMutation = MockFenv$Mutation$ChangeWorld()..install();
+  });
+
+  tearDown(() {
+    mockUseQuery.uninstall();
+    mockMutation.uninstall();
+  });
+
+  testWidgets('test with mocked data', (tester) async {
+    // Configure mock to return specific data
+    mockUseQuery.dataBuilder = valueDataBuilder(
+      mockData$Query$HelloWorld(
+        user: mockUser(id: '123', name: 'Test User'),
+      ),
+    );
+
+    // Your test code here
+  });
+}
+```
+
+### Mock Data Builders
+
+The generated mocks include several helper functions:
+
+```dart
+// Returns null data (simulates empty response)
+mockUseQuery.dataBuilder = emptyDataBuilder;
+
+// Returns an error
+mockUseQuery.dataBuilder = errorDataBuilder;
+
+// Returns specific data
+mockUseQuery.dataBuilder = valueDataBuilder(
+  mockData$Query$HelloWorld(
+    user: mockUser(id: '123', name: 'Test User'),
+  ),
+);
+
+// Dynamic data based on variables
+mockUseQuery.dataBuilder = (variables) {
+  final id = variables?.id;
+  return mockData$Query$HelloWorld(
+    user: mockUser(id: id, name: 'User $id'),
+  );
+};
+
+// Custom error
+mockMutation.dataBuilder = (_) => throw MyCustomException('Failed');
+```
+
+### Testing Mutations
+
+```dart
+testWidgets('should handle mutation success', (tester) async {
+  mockMutation.dataBuilder = valueDataBuilder(
+    mockData$Mutation$ChangeWorld(
+      updateUser: mockUser(id: '123', name: 'Updated Name'),
+    ),
+  );
+
+  // Trigger the mutation in your widget
+  await tester.tap(find.text('Save'));
+  await tester.pumpAndSettle();
+
+  // Assert the expected behavior
+  expect(find.text('Success'), findsOneWidget);
+});
+
+testWidgets('should handle mutation error', (tester) async {
+  mockMutation.dataBuilder = errorDataBuilder;
+
+  await tester.tap(find.text('Save'));
+  await tester.pumpAndSettle();
+
+  expect(find.text('Error'), findsOneWidget);
+});
+```
+
+## Limitations
+
+- Mock implementations for `useFenv$Mutation$...()` hooks are not yet available,
+  which is another reason we recommend using direct mutation functions
+  (`fenv$Mutate$...()`) instead
+- If you can help implement mutation hook mocks, contributions are welcome!
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit issues or pull requests to
+the [GitHub repository](https://github.com/fenv-org/fenv_graphql_codegen).
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for
+details.
