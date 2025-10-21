@@ -4,7 +4,8 @@
 
 ## 0.0.0+2
 
-- Update topics: use `graphql_codegen` instead of `codegen` and reorganize order.
+- Update topics: use `graphql_codegen` instead of `codegen` and reorganize
+  order.
 
 ## 0.0.0+1
 

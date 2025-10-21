@@ -6,11 +6,23 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
-  # Core dependencies would go here in a real project
-  # For now, keeping minimal for test purposes
+  flutter:
+    sdk: flutter
+  fenv_graphql_core:
+    path: ../../../../../fenv_graphql_core
+  flutter_hooks: ^0.20.5
+  gql: ^1.0.1
+  graphql: ^5.2.2
+  graphql_flutter: ^5.2.0
+  hooks_riverpod: ^2.6.1
+  http: ^1.5.0
+  meta: ^1.16.0
 
 dev_dependencies:
-  build_runner: ^2.10.0
+  build_runner: ^2.5.4
   fenv_graphql_codegen:
-    path: ../../../../  # Points to the actual codegen package
+    path: ../../../../
+  fenv_graphql_test:
+    path: ../../../../../fenv_graphql_test
+  flutter_lints: ^5.0.0
   test: ^1.24.0

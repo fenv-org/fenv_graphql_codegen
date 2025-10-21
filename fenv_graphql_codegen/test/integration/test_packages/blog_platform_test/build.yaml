@@ -1,9 +1,32 @@
 targets:
   $default:
     builders:
-      fenv_graphql_codegen:
-        enabled: true
+      fenv_graphql_codegen:graphql_codegen:
         options:
-          schema_path: lib/schema.graphql
-          output_directory: lib/gen/graphql
-          generate_helpers: true
+          assetsPath: "lib/**.graphql"
+          scalars:
+            DateTime:
+              type: DateTime
+            Upload:
+              type: MultipartFile
+              import: "package:http/http.dart"
+          clients:
+            - graphql
+            - graphql_flutter
+          outputDirectory: "generated"
+
+      fenv_graphql_codegen:fenv_graphql_codegen:
+        generate_for: ["lib/**.graphql.dart"]
+        options:
+          target_file_extension: .graphql.dart
+          symbol_name_prefix: myapp
+          filename_suffix: myapp
+          format: true
+          
+      fenv_graphql_codegen:fenv_graphql_mocks_codegen:
+        generate_for: ["lib/**.graphql.dart"]
+        options:
+          target_file_extension: .graphql.dart
+          symbol_name_prefix: myapp
+          filename_suffix: myapp
+          format: true
