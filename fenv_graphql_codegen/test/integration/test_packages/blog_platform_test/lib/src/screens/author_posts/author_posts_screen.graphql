@@ -1,0 +1,29 @@
+# Multiple queries in single operation (similar to WorkplaceListScreenWorkplaces)
+query AuthorPostsScreen(
+  $authorId: ID!
+  $after: String
+  $first: Int
+  $withDetails: Boolean! = true
+) {
+  author(id: $authorId) {
+    ...AuthorInfo
+  }
+
+  authorPosts(
+    authorId: $authorId
+    after: $after
+    first: $first
+    withDetails: $withDetails
+  ) {
+    edges {
+      cursor
+      node {
+        ...PostCard
+      }
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    totalCount
+  }
+}

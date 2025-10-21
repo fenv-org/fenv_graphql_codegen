@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      fenv_graphql_codegen:
+        enabled: true
+        options:
+          schema_path: lib/schema.graphql
+          output_directory: lib/gen/graphql
+          generate_helpers: true

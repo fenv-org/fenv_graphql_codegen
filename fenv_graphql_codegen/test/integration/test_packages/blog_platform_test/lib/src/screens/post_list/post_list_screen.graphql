@@ -1,0 +1,25 @@
+# Simple pagination query
+query PostListScreen(
+  $after: String
+  $first: Int = 20
+  $categoryId: ID
+  $tagIds: [ID!]
+) {
+  posts(
+    after: $after
+    first: $first
+    categoryId: $categoryId
+    tagIds: $tagIds
+  ) {
+    edges {
+      cursor
+      node {
+        ...PostCard
+      }
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    totalCount
+  }
+}

@@ -1,0 +1,48 @@
+# Single query with nested data and pagination for comments
+query PostDetailScreen(
+  $postId: ID!
+  $commentsAfter: String
+  $commentsFirst: Int = 20
+) {
+  post(id: $postId) {
+    id
+    title
+    content
+    excerpt
+    slug
+    coverImageUrl
+    author {
+      ...AuthorInfo
+    }
+    category {
+      ...CategoryInfo
+    }
+    tags {
+      id
+      name
+      slug
+    }
+    likesCount
+    commentsCount
+    viewsCount
+    readTimeMinutes
+    hasLiked
+    status
+    publishedAt
+    createdAt
+    updatedAt
+  }
+
+  comments(postId: $postId, after: $commentsAfter, first: $commentsFirst) {
+    edges {
+      cursor
+      node {
+        ...CommentItem
+      }
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    totalCount
+  }
+}

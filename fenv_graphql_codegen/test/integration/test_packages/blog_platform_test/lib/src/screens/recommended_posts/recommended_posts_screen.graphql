@@ -1,0 +1,34 @@
+# Nested pagination query (similar to RecommendedOffersList)
+query RecommendedPostsScreen(
+  $after: String
+  $first: Int
+  $latitude: Float
+  $longitude: Float
+  $categoryIds: [ID!]
+  $recommendationType: RecommendationType = PERSONALIZED
+) {
+  recommendedPosts(recommendationType: $recommendationType) {
+    id
+    type
+    title
+    description
+    posts(
+      after: $after
+      first: $first
+      latitude: $latitude
+      longitude: $longitude
+      categoryIds: $categoryIds
+    ) {
+      edges {
+        cursor
+        node {
+          ...PostCard
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+      totalCount
+    }
+  }
+}

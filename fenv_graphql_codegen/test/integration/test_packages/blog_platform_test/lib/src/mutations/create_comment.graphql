@@ -1,0 +1,19 @@
+mutation CreateComment(
+  $postId: ID!
+  $content: String!
+  $parentCommentId: ID
+) {
+  createComment(
+    postId: $postId
+    content: $content
+    parentCommentId: $parentCommentId
+  ) {
+    comment {
+      ...CommentItem
+      post {
+        id
+        commentsCount
+      }
+    }
+  }
+}

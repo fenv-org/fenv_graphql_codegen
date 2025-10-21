@@ -1,0 +1,32 @@
+# Nested fragment example with conditional fields
+fragment PostCard on Post {
+  ...PostCardBase
+  excerpt
+  coverImageUrl
+  author {
+    ...AuthorInfoBase
+  }
+  category {
+    ...CategoryInfo
+  }
+  tags {
+    id
+    name
+    slug
+  }
+  likesCount
+  commentsCount
+  viewsCount
+  readTimeMinutes
+  hasLiked
+  publishedAt
+}
+
+fragment PostCardBase on Post {
+  id
+  title
+  slug
+  status
+  createdAt
+  updatedAt
+}

@@ -1,0 +1,30 @@
+# Nested fragment example
+fragment AuthorInfo on User {
+  ...AuthorInfoBase
+  bio
+  avatar {
+    id
+    url
+    thumbnailUrl
+  }
+  profile @include(if: $withDetails) {
+    id
+    website
+    location
+    socialLinks {
+      twitter
+      github
+      linkedin
+    }
+  }
+  followersCount
+  followingCount
+  postsCount
+  isFollowing
+}
+
+fragment AuthorInfoBase on User {
+  id
+  username
+  displayName
+}

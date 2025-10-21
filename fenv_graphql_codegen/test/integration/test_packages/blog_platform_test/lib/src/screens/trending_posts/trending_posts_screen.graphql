@@ -1,0 +1,35 @@
+# Complex pagination with many parameters (similar to FastTimelineOffers)
+query TrendingPostsScreen(
+  $after: String
+  $first: Int
+  $date: DateTime!
+  $input: TrendingPostsInput
+  $latitude: Float
+  $longitude: Float
+  $categoryIds: [ID!]
+  $tagIds: [ID!]
+  $sortingType: SortingType = UNSPECIFIED
+) {
+  trendingPosts(
+    after: $after
+    first: $first
+    date: $date
+    input: $input
+    latitude: $latitude
+    longitude: $longitude
+    categoryIds: $categoryIds
+    tagIds: $tagIds
+    sortingType: $sortingType
+  ) {
+    edges {
+      cursor
+      node {
+        ...PostCard
+      }
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    totalCount
+  }
+}

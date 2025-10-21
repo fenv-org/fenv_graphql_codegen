@@ -1,0 +1,12 @@
+# Single user query with conditional fields
+query ProfileScreen(
+  $userId: ID
+  $username: String
+  $withDetails: Boolean! = true
+) {
+  user(id: $userId, username: $username) {
+    ...AuthorInfo
+    email @include(if: $withDetails)
+    createdAt
+  }
+}

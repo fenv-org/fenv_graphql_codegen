@@ -1,0 +1,12 @@
+fragment CommentItem on Comment {
+  id
+  content
+  author {
+    ...AuthorInfoBase
+  }
+  repliesCount
+  likesCount
+  hasLiked
+  createdAt
+  updatedAt
+}

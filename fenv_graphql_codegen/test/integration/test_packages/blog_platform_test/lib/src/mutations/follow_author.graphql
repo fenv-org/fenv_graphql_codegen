@@ -1,0 +1,19 @@
+mutation FollowAuthor($authorId: ID!) {
+  followAuthor(authorId: $authorId) {
+    follow {
+      id
+      createdAt
+    }
+    author {
+      ...AuthorInfoBase
+      followersCount
+      isFollowing
+    }
+  }
+}
+
+mutation UnfollowAuthor($authorId: ID!) {
+  unfollowAuthor(authorId: $authorId) {
+    unfollowedAuthorId
+  }
+}

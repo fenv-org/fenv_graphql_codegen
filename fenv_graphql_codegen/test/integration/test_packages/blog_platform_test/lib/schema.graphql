@@ -1,0 +1,295 @@
+# Blog Platform Schema
+
+scalar DateTime
+
+# Enums
+enum RecommendationType {
+  PERSONALIZED
+  TRENDING
+  NEW_AUTHORS
+}
+
+enum SortingType {
+  RECENT
+  POPULAR
+  TRENDING
+  UNSPECIFIED
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+# Input Types
+input CreatePostInput {
+  title: String!
+  content: String!
+  excerpt: String
+  categoryIds: [ID!]!
+  tagIds: [ID!]
+  coverImageUrl: String
+}
+
+input TrendingPostsInput {
+  excludeAuthors: [ID!]
+  minReadTime: Int
+  maxReadTime: Int
+  publishedAfter: DateTime
+}
+
+# User Types
+type User {
+  id: ID!
+  username: String!
+  displayName: String!
+  email: String!
+  bio: String
+  avatar: Avatar
+  profile: UserProfile
+  followersCount: Int!
+  followingCount: Int!
+  postsCount: Int!
+  isFollowing: Boolean!
+  createdAt: DateTime!
+}
+
+type Avatar {
+  id: ID!
+  url: String!
+  thumbnailUrl: String
+}
+
+type UserProfile {
+  id: ID!
+  website: String
+  location: String
+  socialLinks: SocialLinks
+}
+
+type SocialLinks {
+  twitter: String
+  github: String
+  linkedin: String
+}
+
+# Post Types
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  excerpt: String
+  slug: String!
+  coverImageUrl: String
+  author: User!
+  category: Category!
+  tags: [Tag!]!
+  likesCount: Int!
+  commentsCount: Int!
+  viewsCount: Int!
+  readTimeMinutes: Int!
+  hasLiked: Boolean!
+  status: PostStatus!
+  publishedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+# Category Types
+type Category {
+  id: ID!
+  name: String!
+  slug: String!
+  description: String
+  postsCount: Int!
+}
+
+# Tag Types
+type Tag {
+  id: ID!
+  name: String!
+  slug: String!
+  postsCount: Int!
+}
+
+# Comment Types
+type Comment {
+  id: ID!
+  content: String!
+  author: User!
+  post: Post!
+  parentComment: Comment
+  repliesCount: Int!
+  likesCount: Int!
+  hasLiked: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+# Like Types
+type Like {
+  id: ID!
+  user: User!
+  post: Post
+  comment: Comment
+  createdAt: DateTime!
+}
+
+# Follow Types
+type Follow {
+  id: ID!
+  follower: User!
+  following: User!
+  createdAt: DateTime!
+}
+
+# Pagination Types
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type PostEdge {
+  cursor: String!
+  node: Post!
+}
+
+type PostConnection {
+  edges: [PostEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CommentEdge {
+  cursor: String!
+  node: Comment!
+}
+
+type CommentConnection {
+  edges: [CommentEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# Recommendation Types
+type RecommendedPosts {
+  id: ID!
+  type: RecommendationType!
+  title: String!
+  description: String
+  posts(
+    after: String
+    first: Int
+    latitude: Float
+    longitude: Float
+    categoryIds: [ID!]
+  ): PostConnection!
+}
+
+# Query Root
+type Query {
+  # Single queries
+  post(id: ID, slug: String): Post
+  user(id: ID, username: String): User
+  category(id: ID, slug: String): Category
+
+  # Pagination queries
+  posts(
+    after: String
+    first: Int = 20
+    categoryId: ID
+    tagIds: [ID!]
+    authorId: ID
+  ): PostConnection!
+
+  comments(
+    after: String
+    first: Int = 20
+    postId: ID!
+  ): CommentConnection!
+
+  # Complex pagination with location
+  trendingPosts(
+    after: String
+    first: Int
+    date: DateTime!
+    input: TrendingPostsInput
+    latitude: Float
+    longitude: Float
+    categoryIds: [ID!]
+    tagIds: [ID!]
+    sortingType: SortingType = UNSPECIFIED
+  ): PostConnection!
+
+  # Nested pagination
+  recommendedPosts(
+    recommendationType: RecommendationType = PERSONALIZED
+  ): RecommendedPosts!
+
+  # Multiple queries
+  author(id: ID!): User
+  authorPosts(
+    authorId: ID!
+    after: String
+    first: Int
+    withDetails: Boolean! = true
+  ): PostConnection!
+}
+
+# Mutation Root
+type Mutation {
+  # Post mutations
+  createPost(input: CreatePostInput!): CreatePostPayload!
+  updatePost(id: ID!, input: CreatePostInput!): UpdatePostPayload!
+  deletePost(id: ID!): DeletePostPayload!
+
+  # Like mutations
+  likePost(postId: ID!): LikePostPayload!
+  unlikePost(postId: ID!): UnlikePostPayload!
+
+  # Comment mutations
+  createComment(postId: ID!, content: String!, parentCommentId: ID): CreateCommentPayload!
+
+  # Follow mutations
+  followAuthor(authorId: ID!): FollowAuthorPayload!
+  unfollowAuthor(authorId: ID!): UnfollowAuthorPayload!
+}
+
+# Mutation Payloads
+type CreatePostPayload {
+  post: Post!
+}
+
+type UpdatePostPayload {
+  post: Post!
+}
+
+type DeletePostPayload {
+  deletedPostId: ID!
+}
+
+type LikePostPayload {
+  post: Post!
+  like: Like!
+}
+
+type UnlikePostPayload {
+  post: Post!
+  unlikedPostId: ID!
+}
+
+type CreateCommentPayload {
+  comment: Comment!
+}
+
+type FollowAuthorPayload {
+  follow: Follow!
+  author: User!
+}
+
+type UnfollowAuthorPayload {
+  unfollowedAuthorId: ID!
+}
