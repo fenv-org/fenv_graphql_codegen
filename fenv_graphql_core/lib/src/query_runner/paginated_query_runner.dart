@@ -9,25 +9,37 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:graphql/client.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart' as riverpod;
 
+/// Manages the execution and state of a paginated GraphQL query.
+///
+/// Provides methods to start queries, fetch more pages, refetch data, and
+/// manage the query lifecycle. Implements [ValueListenable] to notify
+/// listeners of state changes.
 abstract interface class PaginatedQueryRunner<
   TData extends Object,
   TExtra extends Object,
   TOptions extends QueryOptions?
 >
     implements foundation.ValueListenable<TData> {
+  /// Creates a builder for constructing paginated query runners.
   static UntypedPaginatedQueryRunnerBuilder builder() =>
       const UntypedPaginatedQueryRunnerBuilder();
 
+  /// Starts the query with the given options.
   Future<void> start(TOptions options, {required bool retryOnNetworkError});
 
+  /// Fetches the next page of results.
   Future<FetchMoreResult> fetchMore(TOptions options);
 
+  /// Refetches the query from the beginning.
   Future<RefetchResult> refetch(TOptions options, {required bool forceRefetch});
 
+  /// Disables the query, preventing it from executing.
   void disable();
 
+  /// Resets the query to its initial state.
   void reset();
 
+  /// Disposes of this runner and frees resources.
   void dispose();
 }
 
@@ -377,9 +389,11 @@ class _TransformedPaginatedQueryRunner<
       _delegate.start(options, retryOnNetworkError: retryOnNetworkError);
 }
 
+/// Builder for creating paginated query runners without type constraints.
 final class UntypedPaginatedQueryRunnerBuilder {
   const UntypedPaginatedQueryRunnerBuilder();
 
+  /// Creates a builder from a query operation.
   PaginatedQueryRunnerBuilder<
     PaginatedQueryState<TNode, TExtra>,
     TExtra,
@@ -396,6 +410,7 @@ final class UntypedPaginatedQueryRunnerBuilder {
         operation,
       );
 
+  /// Creates a builder from a query operation supplier function.
   PaginatedQueryRunnerBuilder<
     PaginatedQueryState<TNode, TExtra>,
     TExtra,
@@ -419,26 +434,32 @@ final class UntypedPaginatedQueryRunnerBuilder {
   );
 }
 
+/// Builder interface for configuring paginated query runners.
 abstract interface class PaginatedQueryRunnerBuilder<
   TData extends Object,
   TExtra extends Object,
   TOptions extends QueryOptions?
 > {
+  /// Transforms the data type using the given mapper function.
   PaginatedQueryRunnerBuilder<TMapped, TExtra, TOptions>
   transform<TMapped extends Object>(TMapped Function(TData) mapper);
 
+  /// Configures the runner to update a Riverpod notifier's state.
   StateApplyingPaginatedQueryRunnerBuilder<TData, TExtra, TOptions> applyTo(
     riverpod.Notifier<TData> notifier,
   );
 
+  /// Builds the configured paginated query runner.
   PaginatedQueryRunner<TData, TExtra, TOptions> build();
 }
 
+/// Builder interface for paginated query runners with state application.
 abstract interface class StateApplyingPaginatedQueryRunnerBuilder<
   TData extends Object,
   TExtra extends Object,
   TOptions extends QueryOptions?
 > {
+  /// Builds the configured paginated query runner.
   PaginatedQueryRunner<TData, TExtra, TOptions> build();
 }
 

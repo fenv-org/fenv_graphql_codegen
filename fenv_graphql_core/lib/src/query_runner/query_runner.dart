@@ -6,22 +6,33 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:graphql/client.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart' as riverpod;
 
+/// Manages the execution and state of a simple GraphQL query.
+///
+/// Provides methods to start queries, refetch data, and manage the query
+/// lifecycle. Implements [foundation.ValueListenable] to notify listeners of
+/// state changes.
 abstract interface class QueryRunner<
   TData extends Object,
   TOptions extends QueryOptions?
 >
     implements foundation.ValueListenable<TData> {
+  /// Creates a builder for constructing query runners.
   static UntypedQueryRunnerBuilder builder() =>
       const UntypedQueryRunnerBuilder();
 
+  /// Starts the query with the given options.
   Future<void> start(TOptions options, {required bool retryOnNetworkError});
 
+  /// Refetches the query.
   Future<RefetchResult> refetch(TOptions options, {required bool forceRefetch});
 
+  /// Disables the query, preventing it from executing.
   void disable();
 
+  /// Resets the query to its initial state.
   void reset();
 
+  /// Disposes of this runner and frees resources.
   void dispose();
 }
 
@@ -226,15 +237,18 @@ class _TransformedQueryRunner<
       _delegate.start(options, retryOnNetworkError: retryOnNetworkError);
 }
 
+/// Builder for creating query runners without type constraints.
 final class UntypedQueryRunnerBuilder {
   const UntypedQueryRunnerBuilder();
 
+  /// Creates a builder from a query operation.
   QueryRunnerBuilder<QueryState<TResult>, TOptions> queryOperation<
     TResult extends Object,
     TOptions extends QueryOptions<TResult>?
   >(FetcherFactory<TResult, TOptions> operation) =>
       _NonMappedQueryRunnerBuilder<TResult, TOptions>(operation);
 
+  /// Creates a builder from a query operation supplier function.
   QueryRunnerBuilder<QueryState<TResult>, TOptions> queryOperationSupplier<
     TResult extends Object,
     TOptions extends QueryOptions<TResult>?
@@ -244,25 +258,31 @@ final class UntypedQueryRunnerBuilder {
       );
 }
 
+/// Builder interface for configuring query runners.
 abstract interface class QueryRunnerBuilder<
   TData extends Object,
   TOptions extends QueryOptions?
 > {
+  /// Transforms the data type using the given mapper function.
   QueryRunnerBuilder<TMapped, TOptions> transform<TMapped extends Object>(
     TMapped Function(TData) mapper,
   );
 
+  /// Configures the runner to update a Riverpod notifier's state.
   StateApplyingQueryRunnerBuilder<TData, TOptions> applyTo(
     riverpod.Notifier<TData> notifier,
   );
 
+  /// Builds the configured query runner.
   QueryRunner<TData, TOptions> build();
 }
 
+/// Builder interface for query runners with state application.
 abstract interface class StateApplyingQueryRunnerBuilder<
   TData extends Object,
   TOptions extends QueryOptions?
 > {
+  /// Builds the configured query runner.
   QueryRunner<TData, TOptions> build();
 }
 

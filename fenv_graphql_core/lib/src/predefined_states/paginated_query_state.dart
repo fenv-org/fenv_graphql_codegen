@@ -4,6 +4,11 @@ import 'package:graphql/client.dart';
 
 part 'paginated_query_state.freezed.dart';
 
+/// Represents the state of a paginated GraphQL query.
+///
+/// Tracks the lifecycle of a paginated query from creation through loading,
+/// loaded states with pagination metadata, and disabled states. This state
+/// machine ensures type-safe pagination with cursor-based navigation.
 @Freezed(
   map: FreezedMapOptions(map: false, mapOrNull: false, maybeMap: false),
   when: FreezedWhenOptions(when: false, whenOrNull: false, maybeWhen: false),
@@ -11,18 +16,22 @@ part 'paginated_query_state.freezed.dart';
 sealed class PaginatedQueryState<TData extends Object, TExtra extends Object>
     with _$PaginatedQueryState<TData, TExtra>
     implements QuerySession {
+  /// The initial state before any query has been started.
   const factory PaginatedQueryState.created({@Default(0) int myQuerySession}) =
       PaginatedQueryState$Created;
 
+  /// The query is loading for the first time.
   const factory PaginatedQueryState.initialLoading({
     required int myQuerySession,
   }) = PaginatedQueryState$InitialLoading;
 
+  /// The initial load failed with an error.
   const factory PaginatedQueryState.initialLoadingFailed(
     OperationException error, {
     required int myQuerySession,
   }) = PaginatedQueryState$InitialLoadingFailed;
 
+  /// The query has loaded successfully and is idle.
   factory PaginatedQueryState.loadedIdle(
     List<TData> data,
     TExtra? extra, {
@@ -39,6 +48,7 @@ sealed class PaginatedQueryState<TData extends Object, TExtra extends Object>
     hasMore: hasMore,
   );
 
+  /// The query is refetching to get updated data.
   factory PaginatedQueryState.refetching(
     List<TData> data,
     TExtra? extra, {
@@ -55,6 +65,7 @@ sealed class PaginatedQueryState<TData extends Object, TExtra extends Object>
     hasMore: hasMore,
   );
 
+  /// The query is fetching more paginated data.
   factory PaginatedQueryState.fetchingMore(
     List<TData> data,
     TExtra? extra, {
@@ -89,6 +100,7 @@ sealed class PaginatedQueryState<TData extends Object, TExtra extends Object>
     required bool hasMore,
   }) = PaginatedQueryState$Loaded<TData, TExtra>;
 
+  /// The query has been disabled and will not execute.
   const factory PaginatedQueryState.disabled({required int myQuerySession}) =
       PaginatedQueryState$Disabled;
 

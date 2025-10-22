@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:fenv_graphql_core/src/strict_fetch_more.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+/// Extension on [TypedUpdateQuery] to convert it to an [UpdateQuery] function.
 extension TypedUpdateQueryConverter<TParsed> on TypedUpdateQuery<TParsed> {
   /// Converts to a [UpdateQuery] function.
   ///
@@ -23,9 +24,12 @@ extension TypedUpdateQueryConverter<TParsed> on TypedUpdateQuery<TParsed> {
   }
 }
 
+/// Provides helper methods for implementing GraphQL query hooks.
 class QueryHooksImplementationHelpers {
-  /// A helper hook to mimic the behavior of "useQueryOnClient()" in
-  /// "package:graphql_flutter/src/widgets/hooks/query.dart".
+  /// Creates a query hook that subscribes to GraphQL query results.
+  ///
+  /// Mimics the behavior of useQueryOnClient from graphql_flutter by
+  /// setting up an observable query with proper stream handling and callbacks.
   // @protected
   static (ObservableQuery<TParsed>, AsyncSnapshot<QueryResult<TParsed>>)
   useQueryOnClient<TParsed>(
