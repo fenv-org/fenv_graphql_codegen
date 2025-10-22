@@ -1,3 +1,4 @@
 /.flutter-version
 /.claude/settings.local.json
 /.vscode/settings.json
+.flutter-plugins-dependencies
