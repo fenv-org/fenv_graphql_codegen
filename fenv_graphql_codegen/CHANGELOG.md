@@ -1,3 +1,11 @@
+## 0.1.1
+
+- Relocate integration test package from
+  `fenv_graphql_codegen/test/integration/test_packages/` to `test_packages/` at
+  repository root for better maintenance and separation.
+- Update `.gitignore` to exclude Dart build artifacts (`.dart_tool/`, `*.lock`,
+  `build/`).
+
 ## 0.1.0
 
 - Update to analyzer v8.1.1 and adapt code to new API.

@@ -2,7 +2,7 @@ name: fenv_graphql_codegen
 description: >-
   A Dart code generator that creates test-friendly wrappers and mock
   implementations for GraphQL operations.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/fenv-org/fenv_graphql_codegen
 topics:
   - graphql

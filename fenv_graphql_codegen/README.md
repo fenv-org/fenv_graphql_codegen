@@ -107,13 +107,13 @@ Add the following dependencies to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  fenv_graphql_core: ^0.0.1
+  fenv_graphql_core: ^0.1.0
   graphql_flutter: ^5.2.0
   hooks_riverpod: ^2.6.1
 
 dev_dependencies:
-  fenv_graphql_codegen: ^1.0.0
-  build_runner: ^2.4.9
+  fenv_graphql_codegen: ^0.1.1
+  build_runner: ^4.0.2
 ```
 
 ## Configuration
