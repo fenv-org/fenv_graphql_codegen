@@ -2,7 +2,7 @@ name: fenv_graphql_test
 description: >-
   Testing utilities and mock implementations for GraphQL operations generated
   by fenv_graphql_codegen.
-version: 0.1.0
+version: 0.2.0
 repository: https://github.com/fenv-org/fenv_graphql_codegen
 topics:
   - graphql
@@ -14,14 +14,13 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
-  fenv_graphql_core: ^0.1.0
+  fenv_graphql_core: ^0.2.0
   flutter:
     sdk: flutter
   graphql: ^5.2.2
   graphql_flutter: ^5.2.0
 
 dev_dependencies:
-  build_runner: ^2.10.0
   flutter_test:
     sdk: flutter
   lints: ^6.0.0
