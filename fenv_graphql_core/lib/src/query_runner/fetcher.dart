@@ -1,7 +1,5 @@
 import 'package:graphql/client.dart';
-import 'package:barrel_files_annotation/barrel_files_annotation.dart';
 
-@includeInBarrelFile
 typedef Fetcher<
   TResult extends Object,
   TOptions extends QueryOptions<TResult>?
@@ -11,7 +9,6 @@ typedef Fetcher<
       required bool retryOnNetworkError,
     });
 
-@includeInBarrelFile
 abstract interface class FetcherFactory<
   TResult extends Object,
   TOptions extends QueryOptions<TResult>?

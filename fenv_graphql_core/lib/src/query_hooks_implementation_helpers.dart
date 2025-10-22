@@ -1,10 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:barrel_files_annotation/barrel_files_annotation.dart';
 import 'package:fenv_graphql_core/src/strict_fetch_more.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-@includeInBarrelFile
 extension TypedUpdateQueryConverter<TParsed> on TypedUpdateQuery<TParsed> {
   /// Converts to a [UpdateQuery] function.
   ///
@@ -25,7 +23,6 @@ extension TypedUpdateQueryConverter<TParsed> on TypedUpdateQuery<TParsed> {
   }
 }
 
-@includeInBarrelFile
 class QueryHooksImplementationHelpers {
   /// A helper hook to mimic the behavior of "useQueryOnClient()" in
   /// "package:graphql_flutter/src/widgets/hooks/query.dart".

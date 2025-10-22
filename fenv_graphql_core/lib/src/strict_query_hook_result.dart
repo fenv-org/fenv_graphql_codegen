@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:barrel_files_annotation/barrel_files_annotation.dart';
 import 'package:fenv_graphql_core/src/strict_fetch_more.dart';
 
-@includeInBarrelFile
 class StrictQueryHookResult<TParsed, TVariables> {
   factory StrictQueryHookResult({
     required QueryResult<TParsed> result,

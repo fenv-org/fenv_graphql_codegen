@@ -1,16 +1,14 @@
-import 'package:flutter/foundation.dart' as foundation;
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:graphql/client.dart';
-import 'package:barrel_files_annotation/barrel_files_annotation.dart';
 import 'package:fenv_graphql_core/src/predefined_states/paginated_query_state.dart';
 import 'package:fenv_graphql_core/src/query_runner/fetch_more_result.dart';
 import 'package:fenv_graphql_core/src/query_runner/fetcher.dart';
 import 'package:fenv_graphql_core/src/query_runner/pagination_meta_extractor.dart';
 import 'package:fenv_graphql_core/src/query_runner/refetch_result.dart';
 import 'package:fenv_graphql_core/src/utils/unmodifiable_list_slice.dart';
+import 'package:flutter/foundation.dart' as foundation;
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:graphql/client.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart' as riverpod;
 
-@includeInBarrelFile
 abstract interface class PaginatedQueryRunner<
   TData extends Object,
   TExtra extends Object,
@@ -379,7 +377,6 @@ class _TransformedPaginatedQueryRunner<
       _delegate.start(options, retryOnNetworkError: retryOnNetworkError);
 }
 
-@includeInBarrelFile
 final class UntypedPaginatedQueryRunnerBuilder {
   const UntypedPaginatedQueryRunnerBuilder();
 
@@ -422,7 +419,6 @@ final class UntypedPaginatedQueryRunnerBuilder {
   );
 }
 
-@includeInBarrelFile
 abstract interface class PaginatedQueryRunnerBuilder<
   TData extends Object,
   TExtra extends Object,
@@ -438,7 +434,6 @@ abstract interface class PaginatedQueryRunnerBuilder<
   PaginatedQueryRunner<TData, TExtra, TOptions> build();
 }
 
-@includeInBarrelFile
 abstract interface class StateApplyingPaginatedQueryRunnerBuilder<
   TData extends Object,
   TExtra extends Object,
@@ -557,6 +552,7 @@ final class _StateApplyingPaginatedQueryRunnerBuilder<
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       _notifier.state = runner.value;
     });
+    // ignore: invalid_use_of_protected_member
     _notifier.ref.onDispose(runner.dispose);
     return runner;
   }

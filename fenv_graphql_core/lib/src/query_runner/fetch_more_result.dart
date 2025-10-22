@@ -1,11 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:graphql/client.dart';
-import 'package:barrel_files_annotation/barrel_files_annotation.dart';
 
 part 'fetch_more_result.freezed.dart';
 
 /// Represents the result of a fetchMore operation.
-@includeInBarrelFile
 @Freezed(
   map: FreezedMapOptions(map: false, mapOrNull: false, maybeMap: false),
   when: FreezedWhenOptions(when: false, whenOrNull: false, maybeWhen: false),
@@ -28,11 +26,7 @@ sealed class FetchMoreResult with _$FetchMoreResult {
   const FetchMoreResult._();
 }
 
-@includeInBarrelFile
 typedef FetchMoreResult$Succeeded = _Succeeded;
-@includeInBarrelFile
 typedef FetchMoreResult$Failed = _Failed;
-@includeInBarrelFile
 typedef FetchMoreResult$Ignored = _Ignored;
-@includeInBarrelFile
 typedef FetchMoreResult$Cancelled = _Cancelled;

@@ -1,6 +1,3 @@
-import 'package:barrel_files_annotation/barrel_files_annotation.dart';
-
-@includeInBarrelFile
 abstract interface class PaginationMetaExtractor<
   TResult extends Object,
   TNode extends Object,
@@ -12,7 +9,6 @@ abstract interface class PaginationMetaExtractor<
   TExtra extra(TResult query);
 }
 
-@includeInBarrelFile
 abstract interface class PaginationMetaExtractorFactory<
   TResult extends Object,
   TNode extends Object,

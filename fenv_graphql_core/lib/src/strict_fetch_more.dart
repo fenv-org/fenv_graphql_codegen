@@ -1,6 +1,5 @@
 import 'package:gql/ast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:barrel_files_annotation/barrel_files_annotation.dart';
 import 'package:fenv_graphql_core/fenv_graphql_core.dart';
 
 /// A function that updates the existing query result with the new data that is
@@ -12,14 +11,12 @@ import 'package:fenv_graphql_core/fenv_graphql_core.dart';
 ///
 /// In contrast, this function provides a type-safe way to update the existing
 /// query result with [TypedUpdateQuery] function.
-@includeInBarrelFile
 typedef StrictFetchMore<TParsed, TVariables> =
     Future<QueryResult<TParsed>> Function(
       StrictFetchMoreOptions<TParsed, TVariables> options,
     );
 
 /// Options for [StrictFetchMore] function.
-@includeInBarrelFile
 class StrictFetchMoreOptions<TParsed, TVariables> {
   StrictFetchMoreOptions({
     required this.updateQuery,
@@ -43,6 +40,5 @@ class StrictFetchMoreOptions<TParsed, TVariables> {
 ///
 /// [fetchMoreResultData] is the new data that is fetched by the
 /// [StrictQueryHookResult.fetchMore].
-@includeInBarrelFile
 typedef TypedUpdateQuery<TParsed> =
     TParsed Function(TParsed previousResultData, TParsed fetchMoreResultData);

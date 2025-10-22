@@ -9,199 +9,149 @@ part of 'refetch_result.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$RefetchResult {
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is RefetchResult);
+  }
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RefetchResult);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'RefetchResult()';
-}
-
-
+  @override
+  String toString() {
+    return 'RefetchResult()';
+  }
 }
 
 /// @nodoc
-class $RefetchResultCopyWith<$Res>  {
-$RefetchResultCopyWith(RefetchResult _, $Res Function(RefetchResult) __);
+class $RefetchResultCopyWith<$Res> {
+  $RefetchResultCopyWith(RefetchResult _, $Res Function(RefetchResult) __);
 }
 
-
-
 /// @nodoc
-
 
 class _Succeeded extends RefetchResult {
-  const _Succeeded(): super._();
-  
+  const _Succeeded() : super._();
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _Succeeded);
+  }
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Succeeded);
+  @override
+  String toString() {
+    return 'RefetchResult.succeeded()';
+  }
 }
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'RefetchResult.succeeded()';
-}
-
-
-}
-
-
-
 
 /// @nodoc
-
 
 class _Failed extends RefetchResult {
-  const _Failed(this.exception): super._();
-  
+  const _Failed(this.exception) : super._();
 
- final  OperationException? exception;
+  final OperationException? exception;
 
-/// Create a copy of RefetchResult
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$FailedCopyWith<_Failed> get copyWith => __$FailedCopyWithImpl<_Failed>(this, _$identity);
+  /// Create a copy of RefetchResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$FailedCopyWith<_Failed> get copyWith =>
+      __$FailedCopyWithImpl<_Failed>(this, _$identity);
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _Failed &&
+            (identical(other.exception, exception) ||
+                other.exception == exception));
+  }
 
+  @override
+  int get hashCode => Object.hash(runtimeType, exception);
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failed&&(identical(other.exception, exception) || other.exception == exception));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,exception);
-
-@override
-String toString() {
-  return 'RefetchResult.failed(exception: $exception)';
-}
-
-
+  @override
+  String toString() {
+    return 'RefetchResult.failed(exception: $exception)';
+  }
 }
 
 /// @nodoc
-abstract mixin class _$FailedCopyWith<$Res> implements $RefetchResultCopyWith<$Res> {
-  factory _$FailedCopyWith(_Failed value, $Res Function(_Failed) _then) = __$FailedCopyWithImpl;
-@useResult
-$Res call({
- OperationException? exception
-});
-
-
-
-
+abstract mixin class _$FailedCopyWith<$Res>
+    implements $RefetchResultCopyWith<$Res> {
+  factory _$FailedCopyWith(_Failed value, $Res Function(_Failed) _then) =
+      __$FailedCopyWithImpl;
+  @useResult
+  $Res call({OperationException? exception});
 }
+
 /// @nodoc
-class __$FailedCopyWithImpl<$Res>
-    implements _$FailedCopyWith<$Res> {
+class __$FailedCopyWithImpl<$Res> implements _$FailedCopyWith<$Res> {
   __$FailedCopyWithImpl(this._self, this._then);
 
   final _Failed _self;
   final $Res Function(_Failed) _then;
 
-/// Create a copy of RefetchResult
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? exception = freezed,}) {
-  return _then(_Failed(
-freezed == exception ? _self.exception : exception // ignore: cast_nullable_to_non_nullable
-as OperationException?,
-  ));
-}
-
-
+  /// Create a copy of RefetchResult
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? exception = freezed}) {
+    return _then(
+      _Failed(
+        freezed == exception
+            ? _self.exception
+            : exception // ignore: cast_nullable_to_non_nullable
+                  as OperationException?,
+      ),
+    );
+  }
 }
 
 /// @nodoc
-
 
 class _Ignored extends RefetchResult {
-  const _Ignored(): super._();
-  
+  const _Ignored() : super._();
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _Ignored);
+  }
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Ignored);
+  @override
+  String toString() {
+    return 'RefetchResult.ignored()';
+  }
 }
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'RefetchResult.ignored()';
-}
-
-
-}
-
-
-
 
 /// @nodoc
 
-
 class _Cancelled extends RefetchResult {
-  const _Cancelled(): super._();
-  
+  const _Cancelled() : super._();
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _Cancelled);
+  }
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Cancelled);
+  @override
+  String toString() {
+    return 'RefetchResult.cancelled()';
+  }
 }
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'RefetchResult.cancelled()';
-}
-
-
-}
-
-
-
-
-// dart format on

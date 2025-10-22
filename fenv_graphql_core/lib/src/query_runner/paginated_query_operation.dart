@@ -1,5 +1,4 @@
 import 'package:graphql/client.dart';
-import 'package:barrel_files_annotation/barrel_files_annotation.dart';
 import 'package:fenv_graphql_core/src/query_runner/pagination_meta_extractor.dart';
 import 'package:fenv_graphql_core/src/query_runner/simple_query_operation.dart';
 
@@ -18,7 +17,6 @@ import 'package:fenv_graphql_core/src/query_runner/simple_query_operation.dart';
 /// - [TOptions]: The type of query options, extending [QueryOptions]
 /// - [TNode]: The type of individual nodes in the paginated list
 /// - [TExtra]: The type of extra fields alongside the connection (use [void] if none)
-@includeInBarrelFile
 abstract class PaginatedQueryOperation<
   TResult extends Object,
   TOptions extends QueryOptions<TResult>?,

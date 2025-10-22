@@ -17,18 +17,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  barrel_files_annotation: ^0.2.0
-  flutter_hooks: ^0.20.5
+  flutter_hooks: ^0.21.3+1
   freezed_annotation: ^3.0.0
   gql: ^1.0.1
   graphql: ^5.2.2
   graphql_flutter: ^5.2.0
-  hooks_riverpod: ^2.6.1
+  hooks_riverpod: ^3.0.2
 
 dev_dependencies:
-  barrel_files: ^0.2.0
-  build_runner: ^2.5.4
-  flutter_test:
-    sdk: flutter
-  freezed: ^3.1.0
+  build_runner: ^2.7.0
+  freezed: ^3.2.3
   lints: ^6.0.0
