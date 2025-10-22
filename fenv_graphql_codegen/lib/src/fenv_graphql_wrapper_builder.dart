@@ -112,6 +112,7 @@ Future<void> buildProductionHooks(
     '// ignore_for_file: directives_ordering, unused_import, require_trailing_commas',
     '// ignore_for_file: use_test_friendly_graphql_operation',
     '// ignore_for_file: always_put_required_named_parameters_first',
+    '// ignore_for_file: invalid_null_aware_operator',
     '',
     "import 'package:flutter_hooks/flutter_hooks.dart';",
     "import 'package:graphql_flutter/graphql_flutter.dart';",
@@ -151,10 +152,7 @@ GeneratedCode _generateWrapper(
     );
   } else if (hook.isUseMutationHook) {
     final mutateResult = hook.generateHookForMutate(options, reference);
-    final useMutationCode = hook.generateHookForUseMutation(
-      options,
-      reference,
-    );
+    final useMutationCode = hook.generateHookForUseMutation(options, reference);
 
     return (
       definitions: [...mutateResult.definitions, '', ...useMutationCode],

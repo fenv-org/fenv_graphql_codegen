@@ -8,8 +8,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  fenv_graphql_core:
-    path: ../../../../../fenv_graphql_core
+  fenv_graphql_core: ^0.1.0
   flutter_hooks: ^0.20.5
   gql: ^1.0.1
   graphql: ^5.2.2
@@ -22,7 +21,6 @@ dev_dependencies:
   build_runner: ^2.5.4
   fenv_graphql_codegen:
     path: ../../../../
-  fenv_graphql_test:
-    path: ../../../../../fenv_graphql_test
+  fenv_graphql_test: ^0.1.0
   flutter_lints: ^5.0.0
   test: ^1.24.0
