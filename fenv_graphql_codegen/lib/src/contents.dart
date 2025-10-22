@@ -10,9 +10,9 @@ class Contents {
   });
 
   LibraryElement inputLibrary;
-  Uri get uri => inputLibrary.librarySource.uri;
+  Uri get uri => inputLibrary.library.uri;
   final Map<String, ExtensionElement> extensions;
-  final Map<String, FunctionElement> functions;
+  final Map<String, TopLevelFunctionElement> functions;
   final Map<String, ClassElement> classes;
   final List<LibraryElement> importedLibraries;
 

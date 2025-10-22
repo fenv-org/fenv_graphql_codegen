@@ -43,26 +43,19 @@ class FenvGraphqlMockBuilder extends Builder {
     if (!options.shouldAccept(buildStep.inputId.path)) return;
 
     final library = await buildStep.resolver.libraryFor(buildStep.inputId);
-    final hookFunctionElements = library.topLevelElements
-        .whereType<FunctionElement>()
-        .where(
-          (element) => element.isUseQueryHook || element.isUseMutationHook,
-        );
+    final hookFunctionElements = library.topLevelFunctions.where(
+      (element) => element.isUseQueryHook || element.isUseMutationHook,
+    );
     if (hookFunctionElements.isEmpty) return;
 
-    final publicClassElements = library.topLevelElements
-        .whereType<ClassElement>()
-        .where(
-          (element) => !element.name.startsWith('_') && !element.isAbstract,
-        );
+    final publicClassElements = library.classes.whereType<ClassElement>().where(
+      (element) => element.name?.startsWith('_') != true && !element.isAbstract,
+    );
 
-    final clientExtensionElements = library.topLevelElements
-        .whereType<ExtensionElement>()
-        .where(
-          (element) =>
-              element.isQueryClientExtension ||
-              element.isMutationClientExtension,
-        );
+    final clientExtensionElements = library.extensions.where(
+      (element) =>
+          element.isQueryClientExtension || element.isMutationClientExtension,
+    );
 
     final contents = Contents(
       inputLibrary: inputLibrary,
@@ -72,13 +65,17 @@ class FenvGraphqlMockBuilder extends Builder {
       },
       functions: {
         for (final functionElement in hookFunctionElements)
-          functionElement.name: functionElement,
+          if (functionElement.name != null)
+            functionElement.name!: functionElement,
       },
       classes: {
         for (final classElement in publicClassElements)
-          classElement.name: classElement,
+          if (classElement.name != null) classElement.name!: classElement,
       },
-      importedLibraries: library.importedLibraries,
+      importedLibraries: library.fragments
+          .expand((f) => f.importedLibraries)
+          .toSet()
+          .toList(),
     );
 
     await buildMockHooks(buildStep, options, contents);
@@ -139,7 +136,7 @@ Future<void> buildMockHooks(
 
 List<String> _generateWrapper(
   BuilderOptions options,
-  FunctionElement hook,
+  TopLevelFunctionElement hook,
   Contents reference,
 ) {
   if (hook.isUseQueryHook) {

@@ -5,7 +5,7 @@ import 'package:fenv_graphql_codegen/src/hook_for_mutate_extension.dart';
 import 'package:fenv_graphql_codegen/src/hook_function_extension.dart';
 import 'package:fenv_graphql_codegen/src/parameter_elements_extension.dart';
 
-extension MockForMutateExtension on FunctionElement {
+extension MockForMutateExtension on TopLevelFunctionElement {
   List<String> generateMockForMutate(
     BuilderOptions options,
     Contents reference,
@@ -39,7 +39,7 @@ extension MockForMutateExtension on FunctionElement {
       '',
       '  ${mutateMethod.returnType} call(',
       '    GraphQLClient client, ',
-      '    ${mutateMethod.parameters.parametersToString()}',
+      '    ${mutateMethod.formalParameters.parametersToString()}',
       '  ) {',
       '    return mutate(${mutateMethod.optionsArgument});',
       '  }',

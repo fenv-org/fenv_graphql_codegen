@@ -6,7 +6,7 @@ import 'package:fenv_graphql_codegen/src/contents.dart';
 import 'package:fenv_graphql_codegen/src/hook_function_extension.dart';
 import 'package:fenv_graphql_codegen/src/parameter_elements_extension.dart';
 
-extension HookForUseMutationExtension on FunctionElement {
+extension HookForUseMutationExtension on TopLevelFunctionElement {
   /// "useMutation$HelloWorld" -> "Mutation$HelloWorld$HookResult"
   String get hookResultTypeName => '$mutationName\$HookResult';
 
@@ -57,7 +57,7 @@ extension HookForUseMutationExtension on FunctionElement {
   List<String> _useFenvMutationHookDefinition(BuilderOptions options) {
     return [
       '${fenvHookResultTypeName(options)} ${useFenvMutationHookName(options)}(',
-      '  ${parameters.parametersToString()}',
+      '  ${formalParameters.parametersToString()}',
       ') {',
       '  ${useFenvMutationHookWrapperInterfaceName(options)} impl = ${useFenvMutationHookWrapperImplName(options)};',
       '  assert(() {',
@@ -78,7 +78,7 @@ extension HookForUseMutationExtension on FunctionElement {
       '@visibleForTesting',
       'typedef ${useFenvMutationHookWrapperInterfaceName(options)} =',
       '  ${fenvHookResultTypeName(options)} Function(',
-      '    ${parameters.parametersToString()}',
+      '    ${formalParameters.parametersToString()}',
       '  );',
     ];
   }
@@ -97,7 +97,7 @@ extension HookForUseMutationExtension on FunctionElement {
   ) {
     return [
       '${fenvHookResultTypeName(options)} ${useFenvMutationHookWrapperImplName(options)}(',
-      '  ${parameters.parametersToString()}',
+      '  ${formalParameters.parametersToString()}',
       ') {',
       '  return $name(options);',
       '}',

@@ -8,7 +8,7 @@ import 'package:fenv_graphql_codegen/src/hook_function_extension.dart';
 import 'package:fenv_graphql_codegen/src/method_element_pagination_extension.dart';
 import 'package:fenv_graphql_codegen/src/parameter_elements_extension.dart';
 
-extension HookForQueryExtension on FunctionElement {
+extension HookForQueryExtension on TopLevelFunctionElement {
   /// "useQuery$HelloWorld" -> "query$HelloWorld"
   String get queryMethodName => queryName.camelCased;
 
@@ -105,8 +105,8 @@ extension HookForQueryExtension on FunctionElement {
     Contents reference,
   ) {
     final queryMethod = findQueryMethod(reference);
-    final isOptionsRequired = queryMethod.parameters.hasRequiredOptions;
-    final optionsElement = queryMethod.parameters.optionsParameter;
+    final isOptionsRequired = queryMethod.formalParameters.hasRequiredOptions;
+    final optionsElement = queryMethod.formalParameters.optionsParameter;
     final optionsType = optionsElement.type.getDisplayString();
     final queryTypeName = queryMethod.queryName.pascalCased;
     final nodeTypeName = queryMethod.nodeType?.getDisplayString() ?? 'Never';
@@ -117,8 +117,8 @@ extension HookForQueryExtension on FunctionElement {
         : 'void';
 
     final implements = queryMethod.isPaginated
-        ? 'PaginatedQueryOperation<$queryTypeName, ${queryMethod.parameters.optionsParameter.type}, $nodeTypeName, $extraTypeName>'
-        : 'SimpleQueryOperation<$queryTypeName, ${queryMethod.parameters.optionsParameter.type}>';
+        ? 'PaginatedQueryOperation<$queryTypeName, ${queryMethod.formalParameters.optionsParameter.type}, $nodeTypeName, $extraTypeName>'
+        : 'SimpleQueryOperation<$queryTypeName, ${queryMethod.formalParameters.optionsParameter.type}>';
 
     return [
       'class ${fenvQueryWrapperOperationName(options)}',
@@ -128,7 +128,7 @@ extension HookForQueryExtension on FunctionElement {
       '  final GraphQLClient _client;',
       '',
       '  ${queryMethod.returnType} call(',
-      '    ${queryMethod.parameters.parametersToString()}',
+      '    ${queryMethod.formalParameters.parametersToString()}',
       '  ) {',
       '    ${fenvQueryWrapperInterfaceName(options)} impl = ${fenvQueryWrapperImplName(options)};',
       '    assert(() {',
@@ -170,7 +170,7 @@ extension HookForQueryExtension on FunctionElement {
       'typedef ${fenvQueryWrapperInterfaceName(options)} =',
       '  ${queryMethod.returnType} Function(',
       '    GraphQLClient client, ',
-      '    ${queryMethod.parameters.parametersToString()}',
+      '    ${queryMethod.formalParameters.parametersToString()}',
       '  );',
       '',
     ];
@@ -191,7 +191,7 @@ extension HookForQueryExtension on FunctionElement {
     return [
       '${queryMethod.returnType} ${fenvQueryWrapperImplName(options)}(',
       '  GraphQLClient client, ',
-      '  ${queryMethod.parameters.parametersToString()}',
+      '  ${queryMethod.formalParameters.parametersToString()}',
       ') {',
       '  return client.$queryMethodName(',
       '    $optionsArgument,',
@@ -347,9 +347,14 @@ extension HookForQueryExtension on FunctionElement {
 
     // 2. Search in imported libraries (like mock_data_func.dart does)
     for (final lib in reference.importedLibraries) {
-      for (final el in lib.topLevelElements) {
-        if ((el is ClassElement || el is EnumElement) && el.name == nodeTypeName) {
-          return lib.librarySource.uri.toString();
+      for (final el in lib.enums) {
+        if (el.name == nodeTypeName) {
+          return lib.uri.toString();
+        }
+      }
+      for (final el in lib.classes) {
+        if (el.name == nodeTypeName) {
+          return lib.uri.toString();
         }
       }
     }
@@ -372,13 +377,18 @@ extension HookForQueryExtension on FunctionElement {
     // 2. Search in imported libraries
     for (final lib in reference.importedLibraries) {
       // Skip dart:core - primitive types don't need explicit imports
-      if (lib.librarySource.uri.toString() == 'dart:core') {
+      if (lib.uri.toString() == 'dart:core') {
         continue;
       }
 
-      for (final el in lib.topLevelElements) {
-        if ((el is ClassElement || el is EnumElement) && el.name == cleanTypeName) {
-          return lib.librarySource.uri.toString();
+      for (final el in lib.classes) {
+        if (el.name == cleanTypeName) {
+          return lib.uri.toString();
+        }
+      }
+      for (final el in lib.enums) {
+        if (el.name == cleanTypeName) {
+          return lib.uri.toString();
         }
       }
     }

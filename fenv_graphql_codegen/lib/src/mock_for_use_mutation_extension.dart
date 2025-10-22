@@ -4,7 +4,7 @@ import 'package:fenv_graphql_codegen/src/contents.dart';
 import 'package:fenv_graphql_codegen/src/hook_for_use_mutation_extension.dart';
 import 'package:fenv_graphql_codegen/src/parameter_elements_extension.dart';
 
-extension MockForUseMutationExtension on FunctionElement {
+extension MockForUseMutationExtension on TopLevelFunctionElement {
   List<String> generateMockForUseMutation(
     BuilderOptions options,
     Contents reference,
@@ -20,7 +20,7 @@ extension MockForUseMutationExtension on FunctionElement {
       '  }',
       '',
       '  ${fenvHookResultTypeName(options)} call(',
-      '    ${parameters.parametersToString()}',
+      '    ${formalParameters.parametersToString()}',
       '  );',
       '}',
     ];

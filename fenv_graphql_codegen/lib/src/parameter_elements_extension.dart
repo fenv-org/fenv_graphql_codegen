@@ -1,13 +1,13 @@
 import 'package:analyzer/dart/element/element.dart';
 
-extension ParameterElementsExtension on Iterable<ParameterElement> {
+extension ParameterElementsExtension on Iterable<FormalParameterElement> {
   bool get hasRequiredOptions => optionsParameter.isRequired;
 
-  ParameterElement findByName(String name) {
+  FormalParameterElement findByName(String name) {
     return firstWhere((element) => element.name == name);
   }
 
-  ParameterElement get optionsParameter => findByName('options');
+  FormalParameterElement get optionsParameter => findByName('options');
 
   String parametersToString() {
     final requiredPositional = where(

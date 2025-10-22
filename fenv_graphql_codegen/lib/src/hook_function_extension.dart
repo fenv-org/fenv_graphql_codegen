@@ -3,11 +3,11 @@ import 'package:fenv_graphql_codegen/src/contents.dart';
 import 'package:fenv_graphql_codegen/src/parameter_elements_extension.dart';
 
 extension HookFunctionExtension on ExecutableElement {
-  bool get isUseQueryHook => name.startsWith('useQuery\$');
-  bool get isUseMutationHook => name.startsWith('useMutation\$');
+  bool get isUseQueryHook => name?.startsWith('useQuery\$') ?? false;
+  bool get isUseMutationHook => name?.startsWith('useMutation\$') ?? false;
 
   /// "useQuery$HelloWorld" -> "Query$HelloWorld"
-  String get queryName => name.replaceFirst('use', '');
+  String get queryName => name?.replaceFirst('use', '') ?? '';
 
   /// "useMutation$HelloWorld" -> "Mutation$HelloWorld"
   String get mutationName => queryName;
@@ -27,9 +27,9 @@ extension HookFunctionExtension on ExecutableElement {
       ? 'Variables\$$queryName?'
       : 'Null';
 
-  String get optionsArgument => parameters.hasRequiredOptions
+  String get optionsArgument => formalParameters.hasRequiredOptions
       ? 'options'
-      : 'options ?? ${parameters.findByName('options').type.getDisplayString().replaceFirst('?', '')}()';
+      : 'options ?? ${formalParameters.findByName('options').type.getDisplayString().replaceFirst('?', '')}()';
 
   List<MethodElement> extensionMethods(Contents reference) =>
       reference.findExtensionByName(queryName)?.methods ?? const [];

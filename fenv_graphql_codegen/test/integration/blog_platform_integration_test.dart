@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
@@ -19,14 +20,23 @@ void main() {
         ),
       );
 
-      expect(testPackageDir.existsSync(), isTrue,
-        reason: 'Test package directory not found: ${testPackageDir.path}');
+      expect(
+        testPackageDir.existsSync(),
+        isTrue,
+        reason: 'Test package directory not found: ${testPackageDir.path}',
+      );
     });
 
     test('test package structure is correct', () {
       // Verify schema exists
-      final schemaFile = File(path.join(testPackageDir.path, 'lib', 'schema.graphql'));
-      expect(schemaFile.existsSync(), isTrue, reason: 'schema.graphql not found');
+      final schemaFile = File(
+        path.join(testPackageDir.path, 'lib', 'schema.graphql'),
+      );
+      expect(
+        schemaFile.existsSync(),
+        isTrue,
+        reason: 'schema.graphql not found',
+      );
 
       // Verify fragment files exist
       final fragmentFiles = [
@@ -72,7 +82,11 @@ void main() {
 
       // Verify config files
       final pubspecFile = File(path.join(testPackageDir.path, 'pubspec.yaml'));
-      expect(pubspecFile.existsSync(), isTrue, reason: 'pubspec.yaml not found');
+      expect(
+        pubspecFile.existsSync(),
+        isTrue,
+        reason: 'pubspec.yaml not found',
+      );
 
       final buildFile = File(path.join(testPackageDir.path, 'build.yaml'));
       expect(buildFile.existsSync(), isTrue, reason: 'build.yaml not found');
@@ -81,38 +95,44 @@ void main() {
     test('pub get succeeds', () async {
       await _cleanGeneratedFiles(testPackageDir);
 
-      final result = await Process.run(
-        'dart',
-        ['pub', 'get'],
-        workingDirectory: testPackageDir.path,
-      );
+      final result = await Process.run('dart', [
+        'pub',
+        'get',
+      ], workingDirectory: testPackageDir.path);
 
       print('pub get stdout: ${result.stdout}');
       if (result.exitCode != 0) {
         print('pub get stderr: ${result.stderr}');
       }
 
-      expect(result.exitCode, equals(0),
-        reason: 'pub get failed: ${result.stderr}');
+      expect(
+        result.exitCode,
+        equals(0),
+        reason: 'pub get failed: ${result.stderr}',
+      );
     }, timeout: Timeout(Duration(minutes: 2)));
 
     test('build_runner generates files', () async {
       await _cleanGeneratedFiles(testPackageDir);
       await _runPubGet(testPackageDir);
 
-      final result = await Process.run(
-        'dart',
-        ['run', 'build_runner', 'build', '--delete-conflicting-outputs'],
-        workingDirectory: testPackageDir.path,
-      );
+      final result = await Process.run('dart', [
+        'run',
+        'build_runner',
+        'build',
+        '--delete-conflicting-outputs',
+      ], workingDirectory: testPackageDir.path);
 
       print('build_runner stdout: ${result.stdout}');
       if (result.exitCode != 0) {
         print('build_runner stderr: ${result.stderr}');
       }
 
-      expect(result.exitCode, equals(0),
-        reason: 'build_runner failed: ${result.stderr}');
+      expect(
+        result.exitCode,
+        equals(0),
+        reason: 'build_runner failed: ${result.stderr}',
+      );
 
       // Check that some generated files exist
       final genDir = Directory(
@@ -121,13 +141,16 @@ void main() {
 
       if (genDir.existsSync()) {
         final generatedFiles = genDir
-          .listSync(recursive: true)
-          .whereType<File>()
-          .where((f) => f.path.endsWith('.dart'))
-          .toList();
+            .listSync(recursive: true)
+            .whereType<File>()
+            .where((f) => f.path.endsWith('.dart'))
+            .toList();
 
-        expect(generatedFiles, isNotEmpty,
-          reason: 'No generated .dart files found in ${genDir.path}');
+        expect(
+          generatedFiles,
+          isNotEmpty,
+          reason: 'No generated .dart files found in ${genDir.path}',
+        );
 
         print('Generated ${generatedFiles.length} files');
         for (final file in generatedFiles.take(5)) {
@@ -136,25 +159,31 @@ void main() {
       }
     }, timeout: Timeout(Duration(minutes: 3)));
 
-    test('generated code has no analysis errors', () async {
-      await _cleanGeneratedFiles(testPackageDir);
-      await _runPubGet(testPackageDir);
-      await _runBuildRunner(testPackageDir);
+    test(
+      'generated code has no analysis errors',
+      () async {
+        await _cleanGeneratedFiles(testPackageDir);
+        await _runPubGet(testPackageDir);
+        await _runBuildRunner(testPackageDir);
 
-      final analyzeResult = await Process.run(
-        'dart',
-        ['analyze', '--fatal-infos'],
-        workingDirectory: testPackageDir.path,
-      );
+        final analyzeResult = await Process.run('dart', [
+          'analyze',
+          '--fatal-infos',
+        ], workingDirectory: testPackageDir.path);
 
-      print('analyze stdout: ${analyzeResult.stdout}');
-      if (analyzeResult.exitCode != 0) {
-        print('analyze stderr: ${analyzeResult.stderr}');
-      }
+        print('analyze stdout: ${analyzeResult.stdout}');
+        if (analyzeResult.exitCode != 0) {
+          print('analyze stderr: ${analyzeResult.stderr}');
+        }
 
-      expect(analyzeResult.exitCode, equals(0),
-        reason: 'Generated code has analysis errors: ${analyzeResult.stdout}');
-    }, timeout: Timeout(Duration(minutes: 3)));
+        expect(
+          analyzeResult.exitCode,
+          equals(0),
+          reason: 'Generated code has analysis errors: ${analyzeResult.stdout}',
+        );
+      },
+      timeout: Timeout(Duration(minutes: 3)),
+    );
 
     test('fragments are properly nested', () async {
       // Verify that PostCard fragment references AuthorInfoBase
@@ -191,8 +220,11 @@ void main() {
       await _runBuildRunner(testPackageDir);
 
       final goldenDir = Directory(path.join(testPackageDir.path, 'golden'));
-      expect(goldenDir.existsSync(), isTrue,
-        reason: 'Golden directory not found: ${goldenDir.path}');
+      expect(
+        goldenDir.existsSync(),
+        isTrue,
+        reason: 'Golden directory not found: ${goldenDir.path}',
+      );
 
       // Find all *.myapp.dart files in lib/
       final libMyappFiles = Directory(path.join(testPackageDir.path, 'lib'))
@@ -204,17 +236,26 @@ void main() {
       print('Found ${libMyappFiles.length} .myapp.dart files in lib/');
 
       for (final generatedFile in libMyappFiles) {
-        final relativePath = path.relative(generatedFile.path, from: testPackageDir.path);
+        final relativePath = path.relative(
+          generatedFile.path,
+          from: testPackageDir.path,
+        );
         final goldenFile = File(path.join(goldenDir.path, relativePath));
 
-        expect(goldenFile.existsSync(), isTrue,
-          reason: 'Golden file not found for $relativePath');
+        expect(
+          goldenFile.existsSync(),
+          isTrue,
+          reason: 'Golden file not found for $relativePath',
+        );
 
         final generatedContent = generatedFile.readAsStringSync();
         final goldenContent = goldenFile.readAsStringSync();
 
-        expect(generatedContent, equals(goldenContent),
-          reason: 'Generated file does not match golden file: $relativePath');
+        expect(
+          generatedContent,
+          equals(goldenContent),
+          reason: 'Generated file does not match golden file: $relativePath',
+        );
       }
 
       // Find all *.myapp.mocks.dart files in test/
@@ -227,17 +268,26 @@ void main() {
       print('Found ${testMockFiles.length} .myapp.mocks.dart files in test/');
 
       for (final generatedFile in testMockFiles) {
-        final relativePath = path.relative(generatedFile.path, from: testPackageDir.path);
+        final relativePath = path.relative(
+          generatedFile.path,
+          from: testPackageDir.path,
+        );
         final goldenFile = File(path.join(goldenDir.path, relativePath));
 
-        expect(goldenFile.existsSync(), isTrue,
-          reason: 'Golden file not found for $relativePath');
+        expect(
+          goldenFile.existsSync(),
+          isTrue,
+          reason: 'Golden file not found for $relativePath',
+        );
 
         final generatedContent = generatedFile.readAsStringSync();
         final goldenContent = goldenFile.readAsStringSync();
 
-        expect(generatedContent, equals(goldenContent),
-          reason: 'Generated file does not match golden file: $relativePath');
+        expect(
+          generatedContent,
+          equals(goldenContent),
+          reason: 'Generated file does not match golden file: $relativePath',
+        );
       }
     }, timeout: Timeout(Duration(minutes: 3)));
   });
@@ -245,27 +295,29 @@ void main() {
 
 // Helper functions
 Future<void> _cleanGeneratedFiles(Directory dir) async {
-  final result = await Process.run(
-    'dart',
-    ['run', 'build_runner', 'clean'],
-    workingDirectory: dir.path,
-  );
+  final result = await Process.run('dart', [
+    'run',
+    'build_runner',
+    'clean',
+  ], workingDirectory: dir.path);
   // Clean can fail if no previous build, that's ok
   print('clean result: ${result.exitCode}');
 }
 
 Future<ProcessResult> _runPubGet(Directory dir) async {
-  return await Process.run(
-    'dart',
-    ['pub', 'get'],
-    workingDirectory: dir.path,
-  );
+  return await Process.run('dart', ['pub', 'get'], workingDirectory: dir.path);
 }
 
 Future<ProcessResult> _runBuildRunner(Directory dir) async {
-  return await Process.run(
-    'dart',
-    ['run', 'build_runner', 'build', '--delete-conflicting-outputs'],
-    workingDirectory: dir.path,
-  );
+  await Process.run('dart', [
+    'run',
+    'build_runner',
+    'clean',
+  ], workingDirectory: dir.path);
+  return await Process.run('dart', [
+    'run',
+    'build_runner',
+    'build',
+    '--delete-conflicting-outputs',
+  ], workingDirectory: dir.path);
 }

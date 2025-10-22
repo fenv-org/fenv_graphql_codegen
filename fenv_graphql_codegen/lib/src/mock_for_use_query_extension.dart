@@ -5,7 +5,7 @@ import 'package:fenv_graphql_codegen/src/hook_for_use_query_extension.dart';
 import 'package:fenv_graphql_codegen/src/hook_function_extension.dart';
 import 'package:fenv_graphql_codegen/src/parameter_elements_extension.dart';
 
-extension MockForUseQueryExtension on FunctionElement {
+extension MockForUseQueryExtension on TopLevelFunctionElement {
   List<String> generateMockForUseQuery(
     BuilderOptions options,
     Contents reference,
@@ -43,7 +43,7 @@ extension MockForUseQueryExtension on FunctionElement {
       '    ${useFenvQueryHookDebugOverrideName(options)} = null;',
       '  }',
       '',
-      '  ${hookResultTypedef(options)} call(${parameters.parametersToString()}) {',
+      '  ${hookResultTypedef(options)} call(${formalParameters.parametersToString()}) {',
       '    dirty = useState(0);',
       '',
       '    useEffect(',

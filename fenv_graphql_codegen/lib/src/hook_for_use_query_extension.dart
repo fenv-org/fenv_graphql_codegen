@@ -6,7 +6,7 @@ import 'package:fenv_graphql_codegen/src/contents.dart';
 import 'package:fenv_graphql_codegen/src/hook_function_extension.dart';
 import 'package:fenv_graphql_codegen/src/parameter_elements_extension.dart';
 
-extension HookForUseQueryExtension on FunctionElement {
+extension HookForUseQueryExtension on TopLevelFunctionElement {
   /// "useQuery$HelloWorld" -> "Fenv$Query$HelloWorld$HookResult"
   String hookResultTypedef(BuilderOptions options) =>
       '${options.symbolNamePrefix.pascalCased}\$$queryName\$HookResult';
@@ -66,7 +66,7 @@ extension HookForUseQueryExtension on FunctionElement {
   List<String> _useFenvQueryHookDefinition(BuilderOptions options) {
     return [
       '${hookResultTypedef(options)} ${useFenvQueryHookName(options)}(',
-      '  ${parameters.parametersToString()}',
+      '  ${formalParameters.parametersToString()}',
       ') {',
       '  ${useFenvQueryHookWrapperInterfaceName(options)} impl = ${useFenvQueryHookWrapperImplName(options)};',
       '  assert(() {',
@@ -88,7 +88,7 @@ extension HookForUseQueryExtension on FunctionElement {
       '@visibleForTesting',
       'typedef ${useFenvQueryHookWrapperInterfaceName(options)} =',
       '  ${hookResultTypedef(options)} Function(',
-      '    ${parameters.parametersToString()}',
+      '    ${formalParameters.parametersToString()}',
       '  );',
       '',
     ];
@@ -107,7 +107,7 @@ extension HookForUseQueryExtension on FunctionElement {
   ) {
     return [
       '${hookResultTypedef(options)} ${useFenvQueryHookWrapperImplName(options)}(',
-      '  ${parameters.parametersToString()}',
+      '  ${formalParameters.parametersToString()}',
       ') {',
       '  final client = useGraphQLClient();',
       '  final (query, asyncSnapshot) =',

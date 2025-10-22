@@ -216,7 +216,7 @@ extension PaginationAnalysisExtension on MethodElement {
 
     for (final field in fields) {
       // Skip special fields
-      if (field.name.startsWith('\$')) continue;
+      if (field.name?.startsWith('\$') ?? false) continue;
 
       // Check if field type ends with '?' (is nullable)
       final isFieldNullable = field.type.getDisplayString().endsWith('?');
@@ -237,7 +237,7 @@ extension PaginationAnalysisExtension on MethodElement {
         final nestedType = field.type as InterfaceType;
         final nestedResult = _findConnectionInType(
           nestedType,
-          [...pathSegments, field.name],
+          [...pathSegments, ?field.name],
           maxDepth: maxDepth,
           hasNullableInPath: updatedHasNullable,
         );
@@ -376,7 +376,7 @@ extension PaginationAnalysisExtension on MethodElement {
         .where(
           (f) =>
               f.name != connectionFieldName &&
-              !f.name.startsWith('\$') &&
+              f.name?.startsWith('\$') != true &&
               !objectFields.contains(f.name) &&
               !f.isSynthetic,
         )
@@ -434,7 +434,7 @@ extension PaginationAnalysisExtension on MethodElement {
         .where(
           (f) =>
               f.name != connectionRootFieldName &&
-              !f.name.startsWith('\$') &&
+              f.name?.startsWith('\$') != true &&
               !objectFields.contains(f.name) &&
               !f.isSynthetic,
         )

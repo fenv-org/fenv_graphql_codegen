@@ -5,7 +5,7 @@ import 'package:fenv_graphql_codegen/src/hook_for_query_extension.dart';
 import 'package:fenv_graphql_codegen/src/hook_function_extension.dart';
 import 'package:fenv_graphql_codegen/src/parameter_elements_extension.dart';
 
-extension MockForQueryExtension on FunctionElement {
+extension MockForQueryExtension on TopLevelFunctionElement {
   List<String> generateMockForQuery(
     BuilderOptions options,
     Contents reference,
@@ -39,7 +39,7 @@ extension MockForQueryExtension on FunctionElement {
       '',
       '  ${queryMethod.returnType} call(',
       '    GraphQLClient client, ',
-      '    ${queryMethod.parameters.parametersToString()}',
+      '    ${queryMethod.formalParameters.parametersToString()}',
       '  ) {',
       '    return fetch($optionsArgument);',
       '  }',

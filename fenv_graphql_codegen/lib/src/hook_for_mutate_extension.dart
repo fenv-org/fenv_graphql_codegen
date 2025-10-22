@@ -7,7 +7,7 @@ import 'package:fenv_graphql_codegen/src/generated_code.dart';
 import 'package:fenv_graphql_codegen/src/hook_function_extension.dart';
 import 'package:fenv_graphql_codegen/src/parameter_elements_extension.dart';
 
-extension HookForMutateExtension on FunctionElement {
+extension HookForMutateExtension on TopLevelFunctionElement {
   /// "useMutation$HelloWorld" -> "mutate$HelloWorld"
   String get mutateMethodName =>
       mutationName.replaceFirst('Mutation\$', 'mutate\$');
@@ -62,7 +62,7 @@ extension HookForMutateExtension on FunctionElement {
     return [
       'extension ${fenvMutationExtensionName(options)} on GraphQLClient {',
       '  ${mutateMethod.returnType} ${fenvMutateMethodName(options)}(',
-      '    ${mutateMethod.parameters.parametersToString()}',
+      '    ${mutateMethod.formalParameters.parametersToString()}',
       '  ) {',
       '    ${fenvMutationWrapperInterfaceName(options)} impl = ${fenvMutationWrapperImplName(options)};',
       '    assert(() {',
@@ -87,7 +87,7 @@ extension HookForMutateExtension on FunctionElement {
       'typedef ${fenvMutationWrapperInterfaceName(options)} =',
       '  ${mutateMethod.returnType} Function(',
       '    GraphQLClient client, ',
-      '    ${mutateMethod.parameters.parametersToString()}',
+      '    ${mutateMethod.formalParameters.parametersToString()}',
       '  );',
     ];
   }
@@ -109,7 +109,7 @@ extension HookForMutateExtension on FunctionElement {
     return [
       '${mutateMethod.returnType} ${fenvMutationWrapperImplName(options)}(',
       '  GraphQLClient client, ',
-      '  ${mutateMethod.parameters.parametersToString()}',
+      '  ${mutateMethod.formalParameters.parametersToString()}',
       ') {',
       '  return client.${mutateMethod.name}(',
       '    options,',
