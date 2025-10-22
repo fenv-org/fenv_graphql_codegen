@@ -1,0 +1,4 @@
+*.graphql.dart
+*.fenv.dart
+*.myapp.dart
+*.myapp.mocks.dart
