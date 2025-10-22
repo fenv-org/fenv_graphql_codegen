@@ -14,7 +14,6 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
-  barrel_files_annotation: ^0.2.0
   fenv_graphql_core: ^0.1.0
   flutter:
     sdk: flutter
@@ -22,8 +21,7 @@ dependencies:
   graphql_flutter: ^5.2.0
 
 dev_dependencies:
-  barrel_files: ^0.2.0
-  build_runner: ^2.5.4
+  build_runner: ^2.10.0
   flutter_test:
     sdk: flutter
   lints: ^6.0.0

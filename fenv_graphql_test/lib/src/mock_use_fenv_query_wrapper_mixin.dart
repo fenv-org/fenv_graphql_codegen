@@ -1,6 +1,5 @@
 // ignore_for_file: unnecessary_null_comparison
 
-import 'package:barrel_files_annotation/barrel_files_annotation.dart';
 import 'package:fenv_graphql_core/fenv_graphql_core.dart';
 import 'package:fenv_graphql_test/src/mock_data_builder.dart';
 import 'package:flutter/foundation.dart';
@@ -11,7 +10,6 @@ import 'package:graphql/client.dart';
 /// This mixin simulates the behavior of [useFenvQuery] hooks by
 /// maintaining query state and providing methods to fetch, refetch,
 /// and fetch more data using a [MockDataBuilder].
-@includeInBarrelFile
 mixin MockUseFenvQueryWrapperMixin<TParsed, TVariables> {
   /// The mock data builder used to generate responses for queries.
   ///

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:graphql/client.dart';
-import 'package:barrel_files_annotation/barrel_files_annotation.dart';
 import 'package:fenv_graphql_test/src/mock_data_builder.dart';
 
 /// A mixin that provides mock implementations for GraphQL operations.
@@ -8,7 +7,6 @@ import 'package:fenv_graphql_test/src/mock_data_builder.dart';
 /// This mixin allows tests to simulate GraphQL operations by using a
 /// [MockDataBuilder] to generate mock responses instead of making
 /// actual network requests.
-@includeInBarrelFile
 mixin MockFenvQueryMutateWrapperMixin<TParsed, TVariables> {
   /// The mock data builder used to generate responses for operations.
   ///
