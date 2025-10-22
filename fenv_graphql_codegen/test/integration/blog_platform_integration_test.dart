@@ -184,6 +184,62 @@ void main() {
       expect(authorContent, contains('fragment AuthorInfoBase on User'));
       expect(authorContent, contains('@include(if: \$withDetails)'));
     });
+
+    test('generated files match golden files', () async {
+      await _cleanGeneratedFiles(testPackageDir);
+      await _runPubGet(testPackageDir);
+      await _runBuildRunner(testPackageDir);
+
+      final goldenDir = Directory(path.join(testPackageDir.path, 'golden'));
+      expect(goldenDir.existsSync(), isTrue,
+        reason: 'Golden directory not found: ${goldenDir.path}');
+
+      // Find all *.myapp.dart files in lib/
+      final libMyappFiles = Directory(path.join(testPackageDir.path, 'lib'))
+          .listSync(recursive: true)
+          .whereType<File>()
+          .where((f) => f.path.endsWith('.myapp.dart'))
+          .toList();
+
+      print('Found ${libMyappFiles.length} .myapp.dart files in lib/');
+
+      for (final generatedFile in libMyappFiles) {
+        final relativePath = path.relative(generatedFile.path, from: testPackageDir.path);
+        final goldenFile = File(path.join(goldenDir.path, relativePath));
+
+        expect(goldenFile.existsSync(), isTrue,
+          reason: 'Golden file not found for $relativePath');
+
+        final generatedContent = generatedFile.readAsStringSync();
+        final goldenContent = goldenFile.readAsStringSync();
+
+        expect(generatedContent, equals(goldenContent),
+          reason: 'Generated file does not match golden file: $relativePath');
+      }
+
+      // Find all *.myapp.mocks.dart files in test/
+      final testMockFiles = Directory(path.join(testPackageDir.path, 'test'))
+          .listSync(recursive: true)
+          .whereType<File>()
+          .where((f) => f.path.endsWith('.myapp.mocks.dart'))
+          .toList();
+
+      print('Found ${testMockFiles.length} .myapp.mocks.dart files in test/');
+
+      for (final generatedFile in testMockFiles) {
+        final relativePath = path.relative(generatedFile.path, from: testPackageDir.path);
+        final goldenFile = File(path.join(goldenDir.path, relativePath));
+
+        expect(goldenFile.existsSync(), isTrue,
+          reason: 'Golden file not found for $relativePath');
+
+        final generatedContent = generatedFile.readAsStringSync();
+        final goldenContent = goldenFile.readAsStringSync();
+
+        expect(generatedContent, equals(goldenContent),
+          reason: 'Generated file does not match golden file: $relativePath');
+      }
+    }, timeout: Timeout(Duration(minutes: 3)));
   });
 }
 

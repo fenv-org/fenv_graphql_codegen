@@ -11,6 +11,7 @@ import 'package:fenv_graphql_core/fenv_graphql_core.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meta/meta.dart';
 import 'package:blog_platform_test/src/screens/recommended_posts/generated/recommended_posts_screen.graphql.dart';
+import 'package:blog_platform_test/generated/schema.graphql.dart';
 import 'package:blog_platform_test/src/features/post_card/generated/post_card.graphql.dart';
 
 extension Myapp$Query$RecommendedPostsScreen$Extension on GraphQLClient {

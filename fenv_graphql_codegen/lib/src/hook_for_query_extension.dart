@@ -348,7 +348,7 @@ extension HookForQueryExtension on FunctionElement {
     // 2. Search in imported libraries (like mock_data_func.dart does)
     for (final lib in reference.importedLibraries) {
       for (final el in lib.topLevelElements) {
-        if (el is ClassElement && el.name == nodeTypeName) {
+        if ((el is ClassElement || el is EnumElement) && el.name == nodeTypeName) {
           return lib.librarySource.uri.toString();
         }
       }
@@ -377,7 +377,7 @@ extension HookForQueryExtension on FunctionElement {
       }
 
       for (final el in lib.topLevelElements) {
-        if (el is ClassElement && el.name == cleanTypeName) {
+        if ((el is ClassElement || el is EnumElement) && el.name == cleanTypeName) {
           return lib.librarySource.uri.toString();
         }
       }
