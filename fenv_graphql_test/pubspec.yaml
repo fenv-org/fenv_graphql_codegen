@@ -2,7 +2,7 @@ name: fenv_graphql_test
 description: >-
   Testing utilities and mock implementations for GraphQL operations generated
   by fenv_graphql_codegen.
-version: 0.0.0
+version: 0.1.0
 repository: https://github.com/fenv-org/fenv_graphql_codegen
 topics:
   - graphql
