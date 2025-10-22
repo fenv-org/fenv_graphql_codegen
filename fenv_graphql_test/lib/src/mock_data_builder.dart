@@ -3,6 +3,11 @@ import 'dart:async';
 import 'package:graphql/client.dart';
 import 'package:barrel_files_annotation/barrel_files_annotation.dart';
 
+/// A function that builds mock data for testing GraphQL operations.
+///
+/// Takes optional [variables] and returns the parsed data of type
+/// [TParsed], or `null` if no data should be returned. Can be
+/// synchronous or asynchronous.
 @includeInBarrelFile
 typedef MockDataBuilder<TParsed, TVariables> =
     FutureOr<TParsed?> Function(TVariables? variables);

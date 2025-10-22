@@ -14,10 +14,10 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
-  flutter:
-    sdk: flutter
   barrel_files_annotation: ^0.2.0
   fenv_graphql_core: ^0.1.0
+  flutter:
+    sdk: flutter
   graphql: ^5.2.2
   graphql_flutter: ^5.2.0
 

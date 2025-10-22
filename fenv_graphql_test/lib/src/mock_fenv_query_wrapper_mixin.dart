@@ -3,19 +3,33 @@ import 'package:graphql/client.dart';
 import 'package:barrel_files_annotation/barrel_files_annotation.dart';
 import 'package:fenv_graphql_test/src/mock_data_builder.dart';
 
+/// A mixin that provides mock implementations for GraphQL operations.
+///
+/// This mixin allows tests to simulate GraphQL operations by using a
+/// [MockDataBuilder] to generate mock responses instead of making
+/// actual network requests.
 @includeInBarrelFile
 mixin MockFenvQueryMutateWrapperMixin<TParsed, TVariables> {
+  /// The mock data builder used to generate responses for operations.
+  ///
+  /// Defaults to [emptyDataBuilder] which returns `null`.
   MockDataBuilder<TParsed, TVariables> dataBuilder = emptyDataBuilder;
 
+  /// Converts JSON variables to the typed [TVariables] format.
   @protected
   TVariables? Function(Map<String, dynamic>) get jsonToVariables;
 
+  /// Converts JSON data to the typed [TParsed] format.
   @protected
   TParsed? Function(Map<String, dynamic>) get jsonToParsed;
 
+  /// Converts typed [TParsed] data to JSON format.
   @protected
   Map<String, dynamic> Function(TParsed) get parsedToJson;
 
+  /// Executes a mock query operation using the configured [dataBuilder].
+  ///
+  /// Invokes callbacks on [options] based on operation success or failure.
   @protected
   Future<QueryResult<TParsed>> fetch(QueryOptions<TParsed> options) async {
     try {
@@ -41,6 +55,9 @@ mixin MockFenvQueryMutateWrapperMixin<TParsed, TVariables> {
     }
   }
 
+  /// Executes a mock mutation operation using the configured [dataBuilder].
+  ///
+  /// Invokes callbacks on [options] based on operation success or failure.
   @protected
   Future<QueryResult<TParsed>> mutate(MutationOptions<TParsed> options) async {
     try {
