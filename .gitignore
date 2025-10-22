@@ -2,3 +2,8 @@
 /.claude/settings.local.json
 /.vscode/settings.json
 .flutter-plugins-dependencies
+
+# Dart/Flutter build artifacts
+.dart_tool/
+*.lock
+build/

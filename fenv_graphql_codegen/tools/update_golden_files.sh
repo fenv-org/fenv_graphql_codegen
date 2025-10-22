@@ -15,9 +15,10 @@ readonly NC='\033[0m' # No Color
 # Get the script directory and project root
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+REPO_ROOT="$(cd "${PROJECT_ROOT}/.." && pwd)"
 
 # Define paths
-readonly TEST_PACKAGE_DIR="${PROJECT_ROOT}/test/integration/test_packages/blog_platform_test"
+readonly TEST_PACKAGE_DIR="${REPO_ROOT}/test_packages/blog_platform_test"
 readonly GOLDEN_DIR="${TEST_PACKAGE_DIR}/golden"
 
 # Counters

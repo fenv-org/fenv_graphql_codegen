@@ -8,13 +8,16 @@ void main() {
     late Directory testPackageDir;
 
     setUpAll(() {
-      // Get test package directory
+      // Get test package directory at repository root
       final currentDir = Directory.current.path;
+
+      // Navigate to repository root (currentDir is fenv_graphql_codegen/)
+      // We need to go up one level to reach the repository root
+      final repoRoot = path.dirname(currentDir);
+
       testPackageDir = Directory(
         path.join(
-          currentDir,
-          'test',
-          'integration',
+          repoRoot,
           'test_packages',
           'blog_platform_test',
         ),

@@ -20,7 +20,7 @@ dependencies:
 dev_dependencies:
   build_runner: ^2.5.4
   fenv_graphql_codegen:
-    path: ../../../../
+    path: ../../fenv_graphql_codegen/
   fenv_graphql_test: ^0.1.0
   flutter_lints: ^5.0.0
   test: ^1.24.0
