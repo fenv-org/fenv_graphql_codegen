@@ -7,7 +7,7 @@ Dart/Flutter applications.
 
 For complete documentation, installation instructions, and usage examples,
 please refer to the
-[main README.md](https://github.com/fenv-org/fenv_graphql_codegen/blob/main/README.md).
+[README.md](https://github.com/fenv-org/fenv_graphql_codegen).
 
 ## Working Example
 

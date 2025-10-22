@@ -118,35 +118,60 @@ dev_dependencies:
 
 ## Configuration
 
-### Customizing the Prefix
+### Customizing the Code Generation
 
 You can customize the generated code prefix and file naming by creating a
-`build.yaml` file in your project root:
+`build.yaml` file in your project root.
+
+#### Understanding the Two Builders
+
+The package includes two separate builders that work together:
+
+1. **`fenv_graphql_codegen`** - Generates production wrappers (`*.fenv.dart`) in
+   the `lib/` directory
+2. **`fenv_graphql_mocks_codegen`** - Generates test mocks (`*.fenv.mocks.dart`)
+   in the `test/` directory
+
+Both builders process the same input files and support the same configuration
+options. When you customize settings, both builders should typically use the
+same values to ensure consistent naming.
+
+#### Configuration Example
 
 ```yaml
 targets:
   $default:
     builders:
-      fenv_graphql_codegen:
+      # Configure production wrapper generation
+      fenv_graphql_codegen:fenv_graphql_codegen:
+        generate_for: ["lib/**.graphql.dart"]
         options:
-          # Changes function names from fenv$Query$... to myapp$Query$...
-          symbol_name_prefix: myapp
-
-          # Changes generated file suffix from .fenv.dart to .myapp.dart
-          filename_suffix: myapp
-
-          # Target files that should be processed
           target_file_extension: .graphql.dart
+          symbol_name_prefix: myapp
+          filename_suffix: myapp
+          format: true
 
-          # Whether to format generated files (can be disabled for performance)
+      # Configure mock generation (should match the settings above)
+      fenv_graphql_codegen:fenv_graphql_mocks_codegen:
+        generate_for: ["lib/**.graphql.dart"]
+        options:
+          target_file_extension: .graphql.dart
+          symbol_name_prefix: myapp
+          filename_suffix: myapp
           format: true
 ```
 
-With the above configuration:
+#### What Gets Generated
 
-- Generated functions: `myapp$Query$HelloWorld()`, `myapp$Mutate$ChangeWorld()`
-- Generated hooks: `useMyapp$Query$HelloWorld()`
-- Generated files: `my_file.myapp.dart`, `my_file.myapp.mocks.dart`
+With the above configuration, for a file at `lib/src/queries/user.graphql.dart`:
+
+- **Production wrapper:** `lib/src/queries/user.myapp.dart`
+  - Functions: `myapp$Query$HelloWorld()`, `myapp$Mutate$ChangeWorld()`
+  - Hooks: `useMyapp$Query$HelloWorld()`
+- **Test mock:** `test/src/queries/user.myapp.mocks.dart`
+  - Mock classes: `MockUseFenv$Query$HelloWorld`,
+    `MockFenv$Mutation$ChangeWorld`
+  - Mock data builders: `mockData$Query$HelloWorld()`, `mockUser()`
 
 ### Available Options
 
