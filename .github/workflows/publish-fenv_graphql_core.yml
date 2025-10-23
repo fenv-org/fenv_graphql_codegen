@@ -1,0 +1,34 @@
+name: Publish fenv_graphql_core to pub.dev
+
+on:
+  push:
+    tags:
+      - 'fenv_graphql_core-v[0-9]+.[0-9]+.[0-9]+*'
+
+jobs:
+  publish:
+    permissions:
+      id-token: write # Required for authentication using OIDC
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: fenv_graphql_core
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.35.6'
+          cache: true
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Dry run publish
+        run: dart pub publish --dry-run
+
+      - name: Publish to pub.dev
+        run: dart pub publish -f
