@@ -113,6 +113,7 @@ dependencies:
 
 dev_dependencies:
   fenv_graphql_codegen: ^0.2.0
+  fenv_graphql_test: ^0.2.0
   build_runner: ^2.7.0
 ```
 
