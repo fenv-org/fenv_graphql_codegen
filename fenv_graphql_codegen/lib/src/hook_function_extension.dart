@@ -1,13 +1,13 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:fenv_graphql_codegen/src/contents.dart';
 import 'package:fenv_graphql_codegen/src/parameter_elements_extension.dart';
 
-extension HookFunctionExtension on ExecutableElement {
-  bool get isUseQueryHook => name?.startsWith('useQuery\$') ?? false;
-  bool get isUseMutationHook => name?.startsWith('useMutation\$') ?? false;
+extension HookFunctionExtension on ExecutableElement2 {
+  bool get isUseQueryHook => name3?.startsWith('useQuery\$') ?? false;
+  bool get isUseMutationHook => name3?.startsWith('useMutation\$') ?? false;
 
   /// "useQuery$HelloWorld" -> "Query$HelloWorld"
-  String get queryName => name?.replaceFirst('use', '') ?? '';
+  String get queryName => name3?.replaceFirst('use', '') ?? '';
 
   /// "useMutation$HelloWorld" -> "Mutation$HelloWorld"
   String get mutationName => queryName;
@@ -31,6 +31,6 @@ extension HookFunctionExtension on ExecutableElement {
       ? 'options'
       : 'options ?? ${formalParameters.findByName('options').type.getDisplayString().replaceFirst('?', '')}()';
 
-  List<MethodElement> extensionMethods(Contents reference) =>
-      reference.findExtensionByName(queryName)?.methods ?? const [];
+  List<MethodElement2> extensionMethods(Contents reference) =>
+      reference.findExtensionByName(queryName)?.methods2 ?? const [];
 }

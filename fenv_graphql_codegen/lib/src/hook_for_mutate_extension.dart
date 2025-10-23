@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:fenv_graphql_codegen/src/builder_options_extension.dart';
 import 'package:fenv_graphql_codegen/src/casing_extension.dart';
@@ -35,9 +35,9 @@ extension HookForMutateExtension on TopLevelFunctionElement {
   String fenvMutationDebugOverrideName(BuilderOptions options) =>
       'debugOverride\$${fenvMutationWrapperInterfaceName(options)}';
 
-  MethodElement findMutateMethod(Contents reference) => extensionMethods(
+  MethodElement2 findMutateMethod(Contents reference) => extensionMethods(
     reference,
-  ).firstWhere((element) => element.name == mutateMethodName);
+  ).firstWhere((element) => element.name3 == mutateMethodName);
 
   GeneratedCode generateHookForMutate(
     BuilderOptions options,
@@ -111,7 +111,7 @@ extension HookForMutateExtension on TopLevelFunctionElement {
       '  GraphQLClient client, ',
       '  ${mutateMethod.formalParameters.parametersToString()}',
       ') {',
-      '  return client.${mutateMethod.name}(',
+      '  return client.${mutateMethod.name3}(',
       '    options,',
       '  );',
       '}',

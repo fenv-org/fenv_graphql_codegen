@@ -1,9 +1,9 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 
-extension ClientExtension on ExtensionElement {
+extension ClientExtension on ExtensionElement2 {
   bool get isQueryClientExtension =>
-      name?.startsWith('ClientExtension\$Query\$') ?? false;
+      name3?.startsWith('ClientExtension\$Query\$') ?? false;
 
   bool get isMutationClientExtension =>
-      name?.startsWith('ClientExtension\$Mutation\$') ?? false;
+      name3?.startsWith('ClientExtension\$Mutation\$') ?? false;
 }

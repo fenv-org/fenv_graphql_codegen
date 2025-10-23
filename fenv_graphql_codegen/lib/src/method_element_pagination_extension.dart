@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 
 /// Information about a connection field found in the query type.
@@ -20,11 +20,11 @@ class _ConnectionInfo {
   final bool hasNullableSegments;
 }
 
-/// Extension on [MethodElement] to analyze pagination structure in GraphQL queries.
+/// Extension on [MethodElement2] to analyze pagination structure in GraphQL queries.
 ///
 /// Provides utilities to detect and extract information about paginated queries
 /// following the Relay Cursor Connections Specification.
-extension PaginationAnalysisExtension on MethodElement {
+extension PaginationAnalysisExtension on MethodElement2 {
   /// Finds connection information in the query result.
   ///
   /// Recursively searches the query type for a connection field at any depth.
@@ -81,8 +81,8 @@ extension PaginationAnalysisExtension on MethodElement {
       final segment = pathSegments[i];
 
       // Find the field in current type
-      final field = currentType.element.fields
-          .where((f) => f.name == segment)
+      final field = currentType.element3.fields2
+          .where((f) => f.name3 == segment)
           .firstOrNull;
 
       if (field == null) break;
@@ -116,8 +116,8 @@ extension PaginationAnalysisExtension on MethodElement {
     final connectionType = connection.connectionType;
 
     // Find edges field
-    final edgesField = connectionType.element.fields
-        .where((f) => f.name == 'edges')
+    final edgesField = connectionType.element3.fields2
+        .where((f) => f.name3 == 'edges')
         .firstOrNull;
 
     if (edgesField == null) return null;
@@ -130,8 +130,8 @@ extension PaginationAnalysisExtension on MethodElement {
     if (edgeType is! InterfaceType) return null;
 
     // Find node field in Edge
-    final nodeField = edgeType.element.fields
-        .where((f) => f.name == 'node')
+    final nodeField = edgeType.element3.fields2
+        .where((f) => f.name3 == 'node')
         .firstOrNull;
 
     return nodeField?.type;
@@ -191,8 +191,8 @@ extension PaginationAnalysisExtension on MethodElement {
     final connectionType = connection.connectionType;
 
     // Find edges field
-    final edgesField = connectionType.element.fields
-        .where((f) => f.name == 'edges')
+    final edgesField = connectionType.element3.fields2
+        .where((f) => f.name3 == 'edges')
         .firstOrNull;
 
     return edgesField?.type.getDisplayString();
@@ -212,11 +212,11 @@ extension PaginationAnalysisExtension on MethodElement {
     // Prevent infinite recursion
     if (pathSegments.length >= maxDepth) return null;
 
-    final fields = type.element.fields;
+    final fields = type.element3.fields2;
 
     for (final field in fields) {
       // Skip special fields
-      if (field.name?.startsWith('\$') ?? false) continue;
+      if (field.name3?.startsWith('\$') ?? false) continue;
 
       // Check if field type ends with '?' (is nullable)
       final isFieldNullable = field.type.getDisplayString().endsWith('?');
@@ -224,7 +224,7 @@ extension PaginationAnalysisExtension on MethodElement {
 
       // Check if this field itself is a connection
       if (_isConnectionType(field.type)) {
-        final fieldPath = [...pathSegments, field.name].join('.');
+        final fieldPath = [...pathSegments, field.name3].join('.');
         return _ConnectionInfo(
           fieldPath: fieldPath,
           connectionType: field.type as InterfaceType,
@@ -237,7 +237,7 @@ extension PaginationAnalysisExtension on MethodElement {
         final nestedType = field.type as InterfaceType;
         final nestedResult = _findConnectionInType(
           nestedType,
-          [...pathSegments, ?field.name],
+          [...pathSegments, ?field.name3],
           maxDepth: maxDepth,
           hasNullableInPath: updatedHasNullable,
         );
@@ -282,17 +282,17 @@ extension PaginationAnalysisExtension on MethodElement {
   bool _isConnectionType(DartType type) {
     if (type is! InterfaceType) return false;
 
-    final element = type.element;
-    final fields = element.fields;
+    final element = type.element3;
+    final fields = element.fields2;
 
     // Check for edges field
     final hasEdges = fields.any(
-      (f) => f.name == 'edges' && _isListType(f.type),
+      (f) => f.name3 == 'edges' && _isListType(f.type),
     );
 
     // Check for pageInfo field
     final hasPageInfo = fields.any(
-      (f) => f.name == 'pageInfo' && _hasPageInfoFields(f.type),
+      (f) => f.name3 == 'pageInfo' && _hasPageInfoFields(f.type),
     );
 
     return hasEdges && hasPageInfo;
@@ -301,21 +301,21 @@ extension PaginationAnalysisExtension on MethodElement {
   /// Whether [type] is a List type.
   bool _isListType(DartType type) {
     if (type is! InterfaceType) return false;
-    return type.element.name == 'List';
+    return type.element3.name3 == 'List';
   }
 
   /// Whether [type] has PageInfo fields (hasNextPage and endCursor).
   bool _hasPageInfoFields(DartType type) {
     if (type is! InterfaceType) return false;
 
-    final element = type.element;
-    final fields = element.fields;
+    final element = type.element3;
+    final fields = element.fields2;
 
     final hasNextPage = fields.any(
-      (f) => f.name == 'hasNextPage' && f.type.isDartCoreBool,
+      (f) => f.name3 == 'hasNextPage' && f.type.isDartCoreBool,
     );
 
-    final hasEndCursor = fields.any((f) => f.name == 'endCursor');
+    final hasEndCursor = fields.any((f) => f.name3 == 'endCursor');
 
     return hasNextPage && hasEndCursor;
   }
@@ -341,8 +341,8 @@ extension PaginationAnalysisExtension on MethodElement {
     InterfaceType currentType = queryType;
     for (var i = 0; i < pathParts.length - 1; i++) {
       final fieldName = pathParts[i];
-      final field = currentType.element.fields
-          .where((f) => f.name == fieldName)
+      final field = currentType.element3.fields2
+          .where((f) => f.name3 == fieldName)
           .firstOrNull;
 
       if (field == null || field.type is! InterfaceType) return null;
@@ -355,7 +355,7 @@ extension PaginationAnalysisExtension on MethodElement {
   /// Returns extra (non-connection) fields at the connection parent level.
   ///
   /// Returns empty list if no extra fields exist.
-  List<FieldElement> get extraFields {
+  List<FieldElement2> get extraFields {
     final connection = _findConnection();
     if (connection == null) return [];
 
@@ -372,12 +372,12 @@ extension PaginationAnalysisExtension on MethodElement {
     // - Special fields (starting with $)
     // - Inherited fields from Object (hashCode, runtimeType)
     // - Synthetic fields (generated by the analyzer)
-    return parentType.element.fields
+    return parentType.element3.fields2
         .where(
           (f) =>
-              f.name != connectionFieldName &&
-              f.name?.startsWith('\$') != true &&
-              !objectFields.contains(f.name) &&
+              f.name3 != connectionFieldName &&
+              f.name3?.startsWith('\$') != true &&
+              !objectFields.contains(f.name3) &&
               !f.isSynthetic,
         )
         .toList();
@@ -412,7 +412,7 @@ extension PaginationAnalysisExtension on MethodElement {
   /// These are sibling fields to the connection path that should be preserved
   /// as extra data. Excludes special fields (starting with $), synthetic fields,
   /// and inherited Object fields.
-  List<FieldElement> get rootLevelExtraFields {
+  List<FieldElement2> get rootLevelExtraFields {
     final connection = _findConnection();
     if (connection == null) return [];
 
@@ -430,12 +430,12 @@ extension PaginationAnalysisExtension on MethodElement {
     // - Special fields (starting with $)
     // - Inherited fields from Object (hashCode, runtimeType)
     // - Synthetic fields (generated by the analyzer)
-    return queryType.element.fields
+    return queryType.element3.fields2
         .where(
           (f) =>
-              f.name != connectionRootFieldName &&
-              f.name?.startsWith('\$') != true &&
-              !objectFields.contains(f.name) &&
+              f.name3 != connectionRootFieldName &&
+              f.name3?.startsWith('\$') != true &&
+              !objectFields.contains(f.name3) &&
               !f.isSynthetic,
         )
         .toList();

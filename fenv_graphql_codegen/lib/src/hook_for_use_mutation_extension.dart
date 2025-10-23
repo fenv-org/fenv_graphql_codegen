@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:fenv_graphql_codegen/src/builder_options_extension.dart';
 import 'package:fenv_graphql_codegen/src/casing_extension.dart';
@@ -99,7 +99,7 @@ extension HookForUseMutationExtension on TopLevelFunctionElement {
       '${fenvHookResultTypeName(options)} ${useFenvMutationHookWrapperImplName(options)}(',
       '  ${formalParameters.parametersToString()}',
       ') {',
-      '  return $name(options);',
+      '  return $name3(options);',
       '}',
     ];
   }

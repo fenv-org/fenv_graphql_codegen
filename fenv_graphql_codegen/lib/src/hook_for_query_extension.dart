@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart' show BuilderOptions;
 import 'package:fenv_graphql_codegen/src/builder_options_extension.dart';
 import 'package:fenv_graphql_codegen/src/casing_extension.dart';
@@ -40,9 +40,9 @@ extension HookForQueryExtension on TopLevelFunctionElement {
   String fenvQueryPaginationMetaExtractorName(BuilderOptions options) =>
       '${fenvQueryWrapperInterfaceName(options)}\$PaginationMetaExtractor';
 
-  MethodElement findQueryMethod(Contents reference) => extensionMethods(
+  MethodElement2 findQueryMethod(Contents reference) => extensionMethods(
     reference,
-  ).firstWhere((element) => element.name == queryMethodName);
+  ).firstWhere((element) => element.name3 == queryMethodName);
 
   GeneratedCode generateHookForQuery(
     BuilderOptions options,
@@ -236,7 +236,7 @@ extension HookForQueryExtension on TopLevelFunctionElement {
           'typedef $parentExtraTypeName = ({',
           ...connectionParentFields.map((field) {
             final fieldType = field.type.getDisplayString();
-            return '  $fieldType ${field.name},';
+            return '  $fieldType ${field.name3},';
           }),
           '});',
           '',
@@ -260,7 +260,7 @@ extension HookForQueryExtension on TopLevelFunctionElement {
       // Add root-level extra fields
       for (final field in rootLevelFields) {
         final fieldType = field.type.getDisplayString();
-        lines.add('  $fieldType ${field.name},');
+        lines.add('  $fieldType ${field.name3},');
       }
 
       lines.addAll(['});', '']);
@@ -305,7 +305,7 @@ extension HookForQueryExtension on TopLevelFunctionElement {
           lines.add('          : (');
           for (final field in connectionParentFields) {
             lines.add(
-              '              ${field.name}: query.$connectionParentPath!.${field.name},',
+              '              ${field.name3}: query.$connectionParentPath!.${field.name3},',
             );
           }
           lines.add('            ),');
@@ -314,7 +314,7 @@ extension HookForQueryExtension on TopLevelFunctionElement {
           lines.add('        $connectionParentFieldName: (');
           for (final field in connectionParentFields) {
             lines.add(
-              '          ${field.name}: query.$connectionParentPath.${field.name},',
+              '          ${field.name3}: query.$connectionParentPath.${field.name3},',
             );
           }
           lines.add('        ),');
@@ -323,7 +323,7 @@ extension HookForQueryExtension on TopLevelFunctionElement {
 
       // Handle root-level extra fields
       for (final field in rootLevelFields) {
-        lines.add('        ${field.name}: query.${field.name},');
+        lines.add('        ${field.name3}: query.${field.name3},');
       }
 
       lines.add('      );');
@@ -348,12 +348,12 @@ extension HookForQueryExtension on TopLevelFunctionElement {
     // 2. Search in imported libraries (like mock_data_func.dart does)
     for (final lib in reference.importedLibraries) {
       for (final el in lib.enums) {
-        if (el.name == nodeTypeName) {
+        if (el.name3 == nodeTypeName) {
           return lib.uri.toString();
         }
       }
       for (final el in lib.classes) {
-        if (el.name == nodeTypeName) {
+        if (el.name3 == nodeTypeName) {
           return lib.uri.toString();
         }
       }
@@ -365,7 +365,7 @@ extension HookForQueryExtension on TopLevelFunctionElement {
 
   /// Finds the library URI where a field's type is defined.
   /// Returns null if the type is in the current library or not found.
-  String? _findFieldTypeLibraryUri(FieldElement field, Contents reference) {
+  String? _findFieldTypeLibraryUri(FieldElement2 field, Contents reference) {
     final fieldType = field.type.getDisplayString();
     final cleanTypeName = fieldType.replaceAll('?', '');
 
@@ -382,12 +382,12 @@ extension HookForQueryExtension on TopLevelFunctionElement {
       }
 
       for (final el in lib.classes) {
-        if (el.name == cleanTypeName) {
+        if (el.name3 == cleanTypeName) {
           return lib.uri.toString();
         }
       }
       for (final el in lib.enums) {
-        if (el.name == cleanTypeName) {
+        if (el.name3 == cleanTypeName) {
           return lib.uri.toString();
         }
       }

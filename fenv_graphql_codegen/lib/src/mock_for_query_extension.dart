@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:fenv_graphql_codegen/src/contents.dart';
 import 'package:fenv_graphql_codegen/src/hook_for_query_extension.dart';

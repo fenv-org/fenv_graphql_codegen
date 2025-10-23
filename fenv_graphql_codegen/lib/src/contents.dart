@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 
 class Contents {
   Contents({
@@ -9,14 +9,14 @@ class Contents {
     required this.importedLibraries,
   });
 
-  LibraryElement inputLibrary;
-  Uri get uri => inputLibrary.library.uri;
-  final Map<String, ExtensionElement> extensions;
+  LibraryElement2 inputLibrary;
+  Uri get uri => inputLibrary.uri;
+  final Map<String, ExtensionElement2> extensions;
   final Map<String, TopLevelFunctionElement> functions;
-  final Map<String, ClassElement> classes;
-  final List<LibraryElement> importedLibraries;
+  final Map<String, ClassElement2> classes;
+  final List<LibraryElement2> importedLibraries;
 
-  ExtensionElement? findExtensionByName(String name) {
+  ExtensionElement2? findExtensionByName(String name) {
     return extensions['ClientExtension\$$name'];
   }
 }

@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print
 
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:fenv_graphql_codegen/src/builder_options_extension.dart';
@@ -50,7 +50,8 @@ class FenvGraphqlWrapperBuilder extends Builder {
     if (hookFunctionElements.isEmpty) return;
 
     final publicClassElements = library.classes.where(
-      (element) => element.name?.startsWith('_') != true && !element.isAbstract,
+      (element) =>
+          element.name3?.startsWith('_') != true && !element.isAbstract,
     );
 
     final clientExtensionElements = library.extensions.where(
@@ -62,19 +63,20 @@ class FenvGraphqlWrapperBuilder extends Builder {
       inputLibrary: inputLibrary,
       extensions: {
         for (final extensionElement in clientExtensionElements)
-          extensionElement.name!: extensionElement,
+          if (extensionElement.name3 != null)
+            extensionElement.name3!: extensionElement,
       },
       functions: {
         for (final functionElement in hookFunctionElements)
-          if (functionElement.name != null)
-            functionElement.name!: functionElement,
+          if (functionElement.name3 != null)
+            functionElement.name3!: functionElement,
       },
       classes: {
         for (final classElement in publicClassElements)
-          if (classElement.name != null) classElement.name!: classElement,
+          if (classElement.name3 != null) classElement.name3!: classElement,
       },
       importedLibraries: library.fragments
-          .expand((f) => f.importedLibraries)
+          .expand((f) => f.importedLibraries2)
           .toSet()
           .toList(),
     );
